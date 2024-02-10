@@ -5,5 +5,6 @@ import com.example.main.entity.Users;
 public interface UsersService {
 	
 	public String addUser(Users user);
+	public boolean emailExists(String email);
 
 }

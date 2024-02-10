@@ -16,8 +16,18 @@ public class UserController {
 	@PostMapping("/register")
 	public String addUsers(@ModelAttribute Users user)
 	{
-		srv.addUser(user);
+		boolean userStatus = srv.emailExists(user.getEmail());
+		if(userStatus==false)
+		{
+			srv.addUser(user);
+			System.out.println("user added");
+		}
+		else
+		{
+			System.out.println("User Already exists");
+		}
 		return "home";
+		
 	}
 
 }

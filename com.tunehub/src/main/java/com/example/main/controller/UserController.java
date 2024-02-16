@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.main.entity.Users;
 import com.example.main.services.UsersService;
@@ -28,6 +29,20 @@ public class UserController {
 		}
 		return "home";
 		
+	}
+	
+	@PostMapping("/validate")
+	//public String validate(@RequestParam("email") String email,@RequestParam("password") String password) we can use this also
+	public String validate(@RequestParam String email,String password)
+	{
+		if(srv.validateUser(email,password)== true)
+		{
+			return "home";
+		}
+		else
+		{
+			return "login";
+		}
 	}
 
 }

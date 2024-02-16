@@ -37,7 +37,15 @@ public class UserController {
 	{
 		if(srv.validateUser(email,password)== true)
 		{
-			return "home";
+			String role = srv.getRole(email);
+			if(role.equals("admin"))
+			{
+				return "adminhome";
+			}
+			else
+			{
+				return "customerhome";				
+			}
 		}
 		else
 		{

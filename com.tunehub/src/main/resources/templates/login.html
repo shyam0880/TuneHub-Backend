@@ -1,18 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Login/Sign Up Form</title>
+<link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
-	<form action="validate" method="post">
-		<h2>User LogIn </h2>
-		<label>Email : </label><input type="text" name="email">
-		<br/>
-		<label>Password : </label><input type="password" name="password">
-		<br/>
-		<input type="submit" value="Login">
-	</form>
+	<div class="container" id="container">
+		<!-- sign in page -->
+		<div class="form-container sign-in-container">
+			<form action="validate" method="post" class="form" id="login">
+				<h1 class="form__title">Login</h1>
+				<div class="form__input-group">
+					<label for="username">Username: </label> 
+					<input type="text"	name="email" class="form__input" id="username"  required>
+				</div>
+				<div class="form__input-group">
+					<label for="pass">Password: </label> 
+					<input type="password" name="password" class="form__input" id="pass" required>
+				</div>
+				<div class="form__input-group">
+					<button type="submit" class="form__button">Submit</button>
+				</div>
+			</form>
+		</div>
+		<div class="overlay-container">
+			<div class="overlay">
+				<div class="overlay-panel overlay-right">
+					<h1>Hello, Friend!</h1>
+					<p>OH! you are new to website. click here</p>
+					<button class="ghost" id="signUp" style="text-decoration: none;">
+						<a href="registration">SIGN UP</a>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 </body>
 </html>

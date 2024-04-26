@@ -9,6 +9,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.example.main.entity.Users;
 import com.example.main.services.UsersService;
 
+import jakarta.servlet.http.HttpSession;
+
+import org.springframework.web.bind.annotation.GetMapping;
+
+
 @Controller
 public class UserController {
 	@Autowired
@@ -33,11 +38,15 @@ public class UserController {
 	
 	@PostMapping("/validate")
 	//public String validate(@RequestParam("email") String email,@RequestParam("password") String password) we can use this also
-	public String validate(@RequestParam String email,String password)
+	public String validate(@RequestParam String email,String password,HttpSession session)
 	{
 		if(srv.validateUser(email,password)== true)
 		{
 			String role = srv.getRole(email);
+			
+			//Creating session
+			session.setAttribute("email", email);
+			
 			if(role.equals("admin"))
 			{
 				return "adminhome";
@@ -52,5 +61,26 @@ public class UserController {
 			return "login";
 		}
 	}
+	
+	@GetMapping("/pay")
+	public String pay(@RequestParam String email) {
+		
+		boolean paymentStatus = false;	//payment api
+		
+		if(paymentStatus==true) {
+			Users user = srv.getUser(email);
+			user.setPremium(true);
+			srv.updateUser(user);
+		}
+		return "login";
+	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate();
+		return "login";
+	}
+	
+	
 
 }

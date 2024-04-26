@@ -17,5 +17,11 @@ public class NavController {
 	{
 		return "registration";
 	}
+	
+	@GetMapping("/newSong")
+	public String newSong()
+	{
+		return "newSong";
+	}
 
 }

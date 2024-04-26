@@ -48,6 +48,17 @@ public class UsersServiceImplementation implements UsersService{
 		Users user = repo.findByEmail(email);
 		return user.getRole();
 	}
+
+	@Override
+	public Users getUser(String email) {
+		return repo.findByEmail(email);
+	}
+
+	@Override
+	public void updateUser(Users user) {
+		repo.save(user);
+		
+	}
 	
 	
 

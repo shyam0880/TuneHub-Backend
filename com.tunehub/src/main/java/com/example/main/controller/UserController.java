@@ -62,18 +62,6 @@ public class UserController {
 		}
 	}
 	
-	@GetMapping("/pay")
-	public String pay(@RequestParam String email) {
-		
-		boolean paymentStatus = false;	//payment api
-		
-		if(paymentStatus==true) {
-			Users user = srv.getUser(email);
-			user.setPremium(true);
-			srv.updateUser(user);
-		}
-		return "login";
-	}
 	
 	@GetMapping("/logout")
 	public String logout(HttpSession session) {

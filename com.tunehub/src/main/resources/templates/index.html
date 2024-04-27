@@ -1,13 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html  xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Home</title>
+<link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
-<h1>Welcome to Tunehub</h1>
-<a href="login">Login</a>
-<a href="registration">Register</a>
+<h1>Welcome to TuneHub</h1>
+
+<div class="overlay-container">
+    <div class="overlay">
+<button class="ghost" id="logIn" style="text-decoration: none;">
+	<a href="login">Login</a>
+</button>
+<button class="ghost" id="SignUp" style="text-decoration: none;">
+	<a href="registration">Register</a>
+</button>
+</div>
+</div>
 
 </body>
 </html>

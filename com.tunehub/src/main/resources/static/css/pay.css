@@ -1,0 +1,30 @@
+@charset "ISO-8859-1";
+*{
+	margin:0;
+	padding:0;
+}
+
+
+a {
+	text-decoration: none;
+	color: white;
+}
+
+h1{
+	color: white;
+
+}
+
+body {
+	background-image: url('./image/grass.jpg');
+	background-size: cover;
+  	backdrop-filter: blur(7px);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	font-family: 'Montserrat', sans-serif;
+	height: 100vh;
+	overflow: hidden;
+	color: white;
+}

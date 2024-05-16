@@ -3,6 +3,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
+<link rel="stylesheet" th:href="@{/css/displaytable.css}">
 <style type="text/css">
 iframe {
 	height: 100px;
@@ -11,7 +12,12 @@ iframe {
 </style>
 </head>
 <body>
-	<table border="1">
+<main class="table">
+<section class="table_header">
+		<h1>Songs</h1>
+		</section>
+		<section class="table_body">
+	<table>
 		<thead>
 			<tr>
 				<th>Name</th>
@@ -31,6 +37,7 @@ iframe {
 			</tr>
 		</tbody>
 	</table>
-
+	</section>
+</main>
 </body>
 </html>

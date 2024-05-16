@@ -8,7 +8,10 @@ a {
 }
 
 body {
-	background: #f6f5f7;
+	background-image: url('./image/bgpic.png');
+	background-size: cover;
+	background-repeat: no-repeat;
+  	background-attachment: fixed;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -16,6 +19,7 @@ body {
 	font-family: 'Montserrat', sans-serif;
 	height: 100vh;
 	margin: -20px 0 50px;
+	overflow: hidden;
 }
 
 button {

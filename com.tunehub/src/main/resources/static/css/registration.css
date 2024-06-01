@@ -77,6 +77,8 @@ input {
 	padding: 12px 15px;
 	margin: 8px 0;
     width: 100%;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: medium;
 }
 
 .radio{
@@ -112,6 +114,7 @@ input {
     display:  flex;
     flex-direction: column;
     width: 100%;
+    
 }
 
 .address .area{
@@ -119,6 +122,8 @@ input {
     border: none;
     border-radius: 5px;
     padding: 10px;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: medium;
 }
 
 .sign-in-container {

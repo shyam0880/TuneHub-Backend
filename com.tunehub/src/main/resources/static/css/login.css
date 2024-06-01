@@ -75,6 +75,8 @@ input {
 	padding: 12px 15px;
 	margin: 8px 0;
 	width: 100%;
+	font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-size: medium;
 }
 
 .container {

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
 <title>Add Song</title>
-<link rel="stylesheet" href="../static/css/addsong.css">
+<link rel="stylesheet" th:href="@{/css/addsong.css}">
 </head>
 <body>
 	<form action="addSong" method="post" class="song-form">

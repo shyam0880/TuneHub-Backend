@@ -2,10 +2,16 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>List of PlayLists</title>
+<link rel="stylesheet" th:href="@{/css/displaytable.css}">
 </head>
 <body>
-<table border="1">
+<main class="table">
+<section class="table_header">
+		<h1>PlayLists</h1>
+		</section>
+		<section class="table_body">
+	<table>
 		<thead>
 			<tr>
 				<th>ID</th>
@@ -26,11 +32,11 @@
 							</audio>
 						</li>
 					</ul>
-
 				</td>
 			</tr>
 		</tbody>
 	</table>
-
+</section>
+</main>
 </body>
 </html>

@@ -11,7 +11,7 @@ For building and running the application you need:
 
 <br>
 
-### It follow the MVC arcticture flow -(as show in below picture)
+### It follow the MVC architecture flow -(as show in below picture)
 <br>
 <img align="center" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/mvc.png">
 <br>

@@ -9,6 +9,12 @@ a {
 	text-decoration: none;
 	color: white;
 }
+
+h1{
+	color: white;
+
+}
+
 body {
 	background-image: url('./image/grass.jpg');
 	background-size: cover;
@@ -42,11 +48,6 @@ main.table{
 	display: flex;
     justify-content: space-between;
     align-items: center;
-
-}
-
-h1{
-	color: white;
 
 }
 

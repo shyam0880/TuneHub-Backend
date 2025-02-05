@@ -8,10 +8,17 @@ import jakarta.persistence.*;
 public class Playlist {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int id;
-	String name;
+	private int id;
+	private String name;
+	private String type;
+	private String imgLink;
 	
 	@ManyToMany
+	@JoinTable(
+	    name = "playlist_song",  
+	    joinColumns = @JoinColumn(name = "playlist_id"), 
+	    inverseJoinColumns = @JoinColumn(name = "song_id") 
+	)
 	List<Song> songs;
 
 	public Playlist() {
@@ -19,10 +26,12 @@ public class Playlist {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Playlist(int id, String name, List<Song> songs) {
+	public Playlist(int id, String name, String type, String imgLink, List<Song> songs) {
 		super();
 		this.id = id;
 		this.name = name;
+		this.type = type;
+		this.imgLink = imgLink;
 		this.songs = songs;
 	}
 
@@ -42,6 +51,22 @@ public class Playlist {
 		this.name = name;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getImgLink() {
+		return imgLink;
+	}
+
+	public void setImgLink(String imgLink) {
+		this.imgLink = imgLink;
+	}
+
 	public List<Song> getSongs() {
 		return songs;
 	}
@@ -52,9 +77,11 @@ public class Playlist {
 
 	@Override
 	public String toString() {
-		return "Playlist [id=" + id + ", name=" + name + ", songs=" + songs + "]";
+		return "Playlist [id=" + id + ", name=" + name + ", type=" + type + ", imgLink=" + imgLink + ", songs=" + songs
+				+ "]";
 	}
-	
-	
 
+
+
+	
 }

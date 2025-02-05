@@ -3,6 +3,7 @@ package com.example.main.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import com.example.main.entity.Song;
 import com.example.main.services.PlaylistService;
 import com.example.main.services.SongService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @CrossOrigin(origins = "*")
@@ -26,27 +29,6 @@ public class PlaylistController {
 	@Autowired
 	PlaylistService playlistService;
 	
-	@GetMapping("/createPlaylist")
-	public String createPlaylist(Model model) {
-		
-		List<SongDTO> songlist = songService.fetchAllSongs();
-		model.addAttribute("songs", songlist);
-		return "createPlaylist";
-	}
-	
-	@PostMapping("/addPlaylist")
-	public String addPlaylist(@ModelAttribute Playlist playlist) {
-		//update playlist table
-		playlistService.addPlaylist(playlist);	
-		
-		//update song table
-		List<Song> Songlist = playlist.getSongs();
-		for(Song s: Songlist) {
-			s.getPlaylists().add(playlist);
-			songService.updateSong(s);
-		}
-		return "adminhome";
-	}
 	
 	@PostMapping("/addToPlaylist")
 	public String addToPlaylist(@RequestBody Playlist playlist) {
@@ -67,6 +49,34 @@ public class PlaylistController {
 		List<PlaylistDTO> playlist = playlistService.fetchAllPlaylist();
 		return playlist;
 	}
+	
+	@DeleteMapping("/deletePlaylist/{id}")
+	public String deletePlaylist(@PathVariable int id) {
+		if(playlistService.existById(id)) {
+			playlistService.deleteById(id);
+			return "Playlist deleted";
+		}
+		else {
+			return "Playlist not deleted";
+		}
+		
+	}
+	
+	@GetMapping("/viewPlaylistById/{id}")
+	public PlaylistDTO viewPlaylistById(@PathVariable int id) {
+		PlaylistDTO playlistDTO = playlistService.findById(id);
+		return playlistDTO;
+	}
+	
+	@DeleteMapping("/playlist/{playlistId}/songs/{songId}")
+    public ResponseEntity<String> removeSongFromPlaylist(
+            @PathVariable int playlistId,
+            @PathVariable int songId) {
+
+        String message = playlistService.removeSongFromPlaylist(playlistId, songId);
+        return ResponseEntity.ok(message);
+    }
+	
 	
 	
 

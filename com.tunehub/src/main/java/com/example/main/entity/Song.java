@@ -13,8 +13,10 @@ public class Song {
 	String artist;
 	String genre;
 	String link;
+	String imgLink;
+	boolean likeSong;
 	
-	@ManyToMany
+	@ManyToMany(mappedBy = "songs")
 	List<Playlist> playlists;
 
 	public Song() {
@@ -22,13 +24,15 @@ public class Song {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Song(int id, String name, String artist, String genre, String link, List<Playlist> playlists) {
+	public Song(int id, String name, String artist, String genre, String link,String imgLink,boolean likeSong, List<Playlist> playlists) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.artist = artist;
 		this.genre = genre;
 		this.link = link;
+		this.imgLink=imgLink;
+		this.likeSong=likeSong;
 		this.playlists = playlists;
 	}
 
@@ -71,6 +75,22 @@ public class Song {
 	public void setLink(String link) {
 		this.link = link;
 	}
+	
+	public String getImgLink() {
+		return imgLink;
+	}
+	
+	public void setImgLink(String imgLink) {
+		this.imgLink=imgLink;
+	}
+
+	public boolean isLikeSong() {
+		return likeSong;
+	}
+
+	public void setLikeSong(boolean likeSong) {
+		this.likeSong = likeSong;
+	}
 
 	public List<Playlist> getPlaylists() {
 		return playlists;
@@ -82,11 +102,10 @@ public class Song {
 
 	@Override
 	public String toString() {
-		return "Songs [id=" + id + ", name=" + name + ", artist=" + artist + ", genre=" + genre + ", link=" + link
-				+ "]";
+		return "Song [id=" + id + ", name=" + name + ", artist=" + artist + ", genre=" + genre + ", link=" + link
+				+ ", imgLink=" + imgLink + ", likeSong=" + likeSong + ", playlists=" + playlists + "]";
 	}
-	
-	
-	
+
+		
 
 }

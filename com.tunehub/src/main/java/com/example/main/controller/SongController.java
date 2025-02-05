@@ -8,13 +8,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.main.dto.SongDTO;
+import com.example.main.entity.Playlist;
 import com.example.main.entity.Song;
 import com.example.main.services.SongService;
 
@@ -23,14 +26,14 @@ import com.example.main.services.SongService;
 public class SongController {
 	
 	@Autowired
-	SongService srv;
+	SongService songService;
 	
 	@PostMapping("/addSong")
     public ResponseEntity<String> addSong(@RequestBody Song song) {
-        boolean songExists = srv.songExists(song.getName());
+        boolean songExists = songService.songExists(song.getName());
         
         if (!songExists) {
-            srv.addSong(song);
+        	songService.addSong(song);
             return ResponseEntity.ok("Song Added Successfully");
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Song Already Exists");
@@ -46,7 +49,7 @@ public class SongController {
 	
 	@GetMapping("/displayAllSongs")
 	public List<SongDTO> displaySongs() {
-		List<SongDTO> songsList = srv.fetchAllSongs();
+		List<SongDTO> songsList = songService.fetchAllSongs();
 		return songsList;
 	}
 	
@@ -54,13 +57,19 @@ public class SongController {
 	public String playSongs(Model model) {
 		boolean premiumUser = true;
 		if(premiumUser) {
-			List<SongDTO> songsList = srv.fetchAllSongs();
+			List<SongDTO> songsList = songService.fetchAllSongs();
 			model.addAttribute("songs", songsList);		
 			return "displaySongs";
 		}
 		else {
 			return "makePayment";
 		}
+	}
+	
+	@DeleteMapping("/deleteById/{id}")
+	public String deleteById(@PathVariable int id) {
+			String message  = songService.deleteById(id);
+			return message;
 	}
 	
 

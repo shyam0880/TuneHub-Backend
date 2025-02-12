@@ -49,7 +49,6 @@ public class SongServiceImplementation implements SongService{
 	@Override
 	public List<SongDTO> fetchAllSongs() {
 		List<Song> songs= songRepository.findAll();
-		
 		return songs.stream().map(this::convertToDTO).toList();
 	}
 	
@@ -65,6 +64,7 @@ public class SongServiceImplementation implements SongService{
             song.getGenre(),
             song.getLink(),
             song.getImgLink(),
+            song.getLikeSong(),
             playlistIds
         );
 	}

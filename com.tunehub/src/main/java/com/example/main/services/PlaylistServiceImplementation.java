@@ -48,6 +48,7 @@ public class PlaylistServiceImplementation implements PlaylistService{
 	            song.getArtist(),
 	            song.getLink(),
 	            song.getImgLink(),
+	            song.getLikeSong(),
 	            getPlaylistIdsContainingSong(song, playlists)
 	        ))
 	        .collect(Collectors.toList());
@@ -68,7 +69,7 @@ public class PlaylistServiceImplementation implements PlaylistService{
 		List<PlaylistDTO> playlistDTOs = playlists.stream().map(playlist -> {
 			
 			List<SongDTO> songDTOs = playlist.getSongs().stream()
-					.map(song -> new SongDTO(song.getId(),song.getName(),song.getGenre(), song.getArtist(),song.getLink(),song.getImgLink(),playlists.stream()
+					.map(song -> new SongDTO(song.getId(),song.getName(),song.getGenre(), song.getArtist(),song.getLink(),song.getImgLink(),song.getLikeSong(),playlists.stream()
 							.filter(p -> p.getSongs().contains(song)) 
 							.map(Playlist::getId) 
 							.collect(Collectors.toList()))) 

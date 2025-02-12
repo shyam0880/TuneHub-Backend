@@ -9,19 +9,21 @@ public class SongDTO {
 	    private String genre;
 	    private String link;
 	    private String imgLink;
+	    boolean likeSong;
 	    private List<Integer> playlistIds;
 
 	    // Default constructor
 	    public SongDTO() {}
 
 	    // Parameterized constructor
-	    public SongDTO(int id, String name, String artist, String genre, String link, String imgLink, List<Integer> playlistIds) {
+	    public SongDTO(int id, String name, String artist, String genre, String link, String imgLink,boolean likeSong, List<Integer> playlistIds) {
 	        this.id = id;
 	        this.name = name;
 	        this.artist = artist;
 	        this.genre = genre;
 	        this.link = link;
 	        this.imgLink = imgLink;
+	        this.likeSong = likeSong;
 	        this.playlistIds = playlistIds;
 	    }
 
@@ -74,6 +76,14 @@ public class SongDTO {
 	        this.imgLink = imgLink;
 	    }
 
+	    public boolean getLikeSong() {
+			return likeSong;
+		}
+
+		public void setLikeSong(boolean likeSong) {
+			this.likeSong = likeSong;
+		}
+	    
 	    public List<Integer> getPlaylistIds() {
 	        return playlistIds;
 	    }

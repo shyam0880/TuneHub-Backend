@@ -84,7 +84,7 @@ public class Song {
 		this.imgLink=imgLink;
 	}
 
-	public boolean isLikeSong() {
+	public boolean getLikeSong() {
 		return likeSong;
 	}
 

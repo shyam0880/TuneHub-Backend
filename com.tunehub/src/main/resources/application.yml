@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${DB_TH_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update  # or create, validate, etc.
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MySQL8Dialect

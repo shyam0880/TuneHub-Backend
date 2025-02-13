@@ -4,19 +4,15 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 
 import com.example.main.dto.PlaylistDTO;
-import com.example.main.dto.SongDTO;
 import com.example.main.entity.Playlist;
 import com.example.main.entity.Song;
 import com.example.main.services.PlaylistService;
 import com.example.main.services.SongService;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 

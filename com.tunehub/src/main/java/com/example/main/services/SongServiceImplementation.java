@@ -20,6 +20,9 @@ public class SongServiceImplementation implements SongService{
 	@Autowired
 	PlaylistRepository playlistRepository;
 	
+	@Autowired
+	CloudinaryService cloudinaryService;
+	
 	@Override
 	public void addSong(Song song) {
 		songRepository.save(song);
@@ -89,12 +92,26 @@ public class SongServiceImplementation implements SongService{
 		if(songRepository.existsById(id)) {
 			Song song = songRepository.findById(id);
 			
-			for(Playlist playlist: song.getPlaylists()) {
-				playlist.getSongs().remove(song);
-			}
-			playlistRepository.saveAll(song.getPlaylists());
-			songRepository.deleteById(id);
-			return "Songs is deleted";
+			String musicPublicId = song.getSongID();
+	        String imagePublicId = song.getImageID();
+
+	        System.out.println("Deleting music file: " + musicPublicId);
+	        System.out.println("Deleting image file: " + imagePublicId);
+			
+			boolean audioDeleted = cloudinaryService.deleteFromCloudinary(musicPublicId, "video");
+	        boolean imageDeleted = cloudinaryService.deleteFromCloudinary(imagePublicId, "image");
+
+	        if (audioDeleted && imageDeleted) {
+	        	//remove song from playlist if exist 
+				for(Playlist playlist: song.getPlaylists()) {
+					playlist.getSongs().remove(song);
+				}
+				playlistRepository.saveAll(song.getPlaylists());
+				songRepository.deleteById(id);
+				return "Songs is deleted";
+	        } else {
+	            throw new RuntimeException("Failed to delete Cloudinary files");
+	        }
 		}
 		else {
 			return "Song not found";

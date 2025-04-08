@@ -12,6 +12,7 @@ public class Playlist {
 	private String name;
 	private String type;
 	private String imgLink;
+	private String imageId;
 	
 	@ManyToMany
 	@JoinTable(
@@ -26,12 +27,13 @@ public class Playlist {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Playlist(int id, String name, String type, String imgLink, List<Song> songs) {
+	public Playlist(int id, String name, String type, String imgLink,String imageId, List<Song> songs) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.imgLink = imgLink;
+		this.imageId = imageId;
 		this.songs = songs;
 	}
 
@@ -67,6 +69,14 @@ public class Playlist {
 		this.imgLink = imgLink;
 	}
 
+	public String getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
+	}
+
 	public List<Song> getSongs() {
 		return songs;
 	}
@@ -77,9 +87,11 @@ public class Playlist {
 
 	@Override
 	public String toString() {
-		return "Playlist [id=" + id + ", name=" + name + ", type=" + type + ", imgLink=" + imgLink + ", songs=" + songs
-				+ "]";
+		return "Playlist [id=" + id + ", name=" + name + ", type=" + type + ", imgLink=" + imgLink + ", imageId="
+				+ imageId + ", songs=" + songs + "]";
 	}
+
+	
 
 
 

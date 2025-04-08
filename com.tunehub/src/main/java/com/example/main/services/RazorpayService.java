@@ -6,6 +6,8 @@ import com.razorpay.RazorpayException;
 
 public interface RazorpayService {
 	
-	Map<String, Object> createOrder(int amount) throws RazorpayException;
+	Map<String, Object> createOrder(int amount, String email) throws RazorpayException;
+	
+	String handleWebhook(String payload) throws Exception;
 
 }

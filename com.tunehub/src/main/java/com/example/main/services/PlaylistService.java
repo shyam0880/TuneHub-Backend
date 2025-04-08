@@ -2,21 +2,27 @@ package com.example.main.services;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.main.dto.PlaylistDTO;
-import com.example.main.entity.Playlist;
+//import com.example.main.entity.Playlist;
 
 public interface PlaylistService {
 
-	public void addPlaylist(Playlist playlist);
+	String addPlaylist(String name, String type, MultipartFile image, String songsJson) throws Exception;
 
-	public List<PlaylistDTO> fetchAllPlaylist();
+	List<PlaylistDTO> fetchAllPlaylist();
 	
-	public PlaylistDTO findById(int id);
+	PlaylistDTO findById(int id);
 	
-	public boolean existById(int id);
+	boolean existById(int id);
 	
-	public void deleteById(int id);
+	String deleteById(int id) throws Exception;
 
-	public String removeSongFromPlaylist(int playlistId, int songId);
+	String removeSongFromPlaylist(int playlistId, int songId);
+
+	String updatePlaylist(int id, String name, String type, MultipartFile image, String songsJson) throws Exception;
+
+	String addSongToPlaylist(int playlistId, int songId);
 
 }

@@ -13,13 +13,18 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.main.dto.ArtistDTO;
 import com.example.main.dto.SongDTO;
 import com.example.main.entity.Artist;
+import com.example.main.entity.Song;
 import com.example.main.repository.ArtistRepository;
+import com.example.main.repository.SongRepository;
 
 @Service
 public class ArtistServiceImplementation implements ArtistService {
 	
 	@Autowired
 	private ArtistRepository artistRepository;
+	
+	@Autowired
+	private SongRepository songRepository;
 	
 	@Autowired
     private Cloudinary cloudinary;
@@ -74,7 +79,8 @@ public class ArtistServiceImplementation implements ArtistService {
         return artistRepository.save(artist);
     }
 
-    private Map<String, Object> uploadImage(MultipartFile image) {
+    @SuppressWarnings("unchecked")
+	private Map<String, Object> uploadImage(MultipartFile image) {
         try {
             return cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
         } catch (IOException e) {
@@ -91,7 +97,8 @@ public class ArtistServiceImplementation implements ArtistService {
     }
 
     private ArtistDTO convertToDTO(Artist artist) {
-        List<SongDTO> songDTOs = Optional.ofNullable(artist.getSongs())  // ✅ Prevent null pointer
+        @SuppressWarnings("null")
+		List<SongDTO> songDTOs = Optional.ofNullable(artist.getSongs())  // ✅ Prevent null pointer
             .orElse(Collections.emptyList())
             .stream()
             .map(song -> new SongDTO(
@@ -115,10 +122,19 @@ public class ArtistServiceImplementation implements ArtistService {
         Artist artist = artistRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Artist not found"));
 
+        // Unlink artist from songs
+        List<Song> songsWithArtist = songRepository.findByArtist(artist);
+        for (Song song : songsWithArtist) {
+            song.setArtist(null); // Or set to a default artist here
+        }
+        songRepository.saveAll(songsWithArtist);
+
+        // Delete image if available
         if (artist.getImageId() != null) {
             deleteImage(artist.getImageId());
         }
 
+        // Finally delete the artist
         artistRepository.delete(artist);
     }
 }

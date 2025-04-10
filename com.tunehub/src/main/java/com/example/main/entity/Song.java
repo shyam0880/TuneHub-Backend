@@ -10,13 +10,16 @@ public class Song {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	int id;
 	String name;
-	String artist;
 	String genre;
 	String link;
-	String songID;
+	String songID; //song cloudinary id
 	String imgLink;
 	String imageID;
 	boolean likeSong;
+	
+	@ManyToOne
+    @JoinColumn(name = "artist_id", nullable = true) // Ensures every song has an artist
+    private Artist artist;
 	
 	@ManyToMany(mappedBy = "songs")
 	List<Playlist> playlists;
@@ -26,17 +29,18 @@ public class Song {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Song(int id, String name, String artist, String genre, String link,String songID, String imgLink,String imageID,boolean likeSong, List<Playlist> playlists) {
+	public Song(int id, String name, String genre, String link, String songID, String imgLink, String imageID,
+			boolean likeSong, Artist artist, List<Playlist> playlists) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.artist = artist;
 		this.genre = genre;
 		this.link = link;
 		this.songID = songID;
 		this.imgLink = imgLink;
-		this.imageID =imageID;
+		this.imageID = imageID;
 		this.likeSong = likeSong;
+		this.artist = artist;
 		this.playlists = playlists;
 	}
 
@@ -56,14 +60,6 @@ public class Song {
 		this.name = name;
 	}
 
-	public String getArtist() {
-		return artist;
-	}
-
-	public void setArtist(String artist) {
-		this.artist = artist;
-	}
-
 	public String getGenre() {
 		return genre;
 	}
@@ -79,13 +75,21 @@ public class Song {
 	public void setLink(String link) {
 		this.link = link;
 	}
-	
+
 	public String getSongID() {
 		return songID;
 	}
 
 	public void setSongID(String songID) {
 		this.songID = songID;
+	}
+
+	public String getImgLink() {
+		return imgLink;
+	}
+
+	public void setImgLink(String imgLink) {
+		this.imgLink = imgLink;
 	}
 
 	public String getImageID() {
@@ -96,20 +100,20 @@ public class Song {
 		this.imageID = imageID;
 	}
 
-	public String getImgLink() {
-		return imgLink;
-	}
-	
-	public void setImgLink(String imgLink) {
-		this.imgLink=imgLink;
-	}
-
 	public boolean getLikeSong() {
 		return likeSong;
 	}
 
 	public void setLikeSong(boolean likeSong) {
 		this.likeSong = likeSong;
+	}
+
+	public Artist getArtist() {
+		return artist;
+	}
+
+	public void setArtist(Artist artist) {
+		this.artist = artist;
 	}
 
 	public List<Playlist> getPlaylists() {
@@ -122,9 +126,12 @@ public class Song {
 
 	@Override
 	public String toString() {
-		return "Song [id=" + id + ", name=" + name + ", artist=" + artist + ", genre=" + genre + ", link=" + link
-				+ ", imgLink=" + imgLink + ", likeSong=" + likeSong + ", playlists=" + playlists + "]";
+		return "Song [id=" + id + ", name=" + name + ", genre=" + genre + ", link=" + link + ", songID=" + songID
+				+ ", imgLink=" + imgLink + ", imageID=" + imageID + ", likeSong=" + likeSong + ", artist=" + artist
+				+ ", playlists=" + playlists + "]";
 	}
+	
+	
 
 		
 

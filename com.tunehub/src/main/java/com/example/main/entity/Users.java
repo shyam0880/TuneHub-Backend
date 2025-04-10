@@ -16,6 +16,8 @@ public class Users {
 	String gender;
 	String role;
 	String address;
+	String image;
+	String imageId;
 	
 	boolean isPremium;
 	
@@ -25,6 +27,7 @@ public class Users {
 	}
 
 	public Users(int id, String username, String email, String password, String gender, String role, String address,
+			String image, String imageId,
 			boolean isPremium) {
 		super();
 		this.id = id;
@@ -34,6 +37,8 @@ public class Users {
 		this.gender = gender;
 		this.role = role;
 		this.address = address;
+		this.image = image;
+		this.imageId = imageId;
 		this.isPremium = isPremium;
 	}
 
@@ -93,6 +98,22 @@ public class Users {
 		this.address = address;
 	}
 
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	public String getImageId() {
+		return imageId;
+	}
+
+	public void setImageId(String imageId) {
+		this.imageId = imageId;
+	}
+
 	public boolean isPremium() {
 		return isPremium;
 	}
@@ -104,8 +125,11 @@ public class Users {
 	@Override
 	public String toString() {
 		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-				+ ", gender=" + gender + ", role=" + role + ", address=" + address + ", isPremium=" + isPremium + "]";
+				+ ", gender=" + gender + ", role=" + role + ", address=" + address + ", image=" + image + ", imageId="
+				+ imageId + ", isPremium=" + isPremium + "]";
 	}
+
+	
 	
 	
 }

@@ -42,16 +42,18 @@ public class PlaylistServiceImplementation implements PlaylistService{
 
         String imageUrl = (String) uploadResult.get("secure_url"); 
         String publicId = (String) uploadResult.get("public_id"); 
+
         
      // ✅ Convert JSON string (songs) to List
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Song> songs = objectMapper.readValue(songsJson, new TypeReference<List<Song>>() {});
+        List<Integer> songIds = objectMapper.readValue(songsJson, new TypeReference<List<Integer>>() {});
+        List<Song> songs = songRepository.findAllById(songIds);
         
         Playlist newPlaylist = new Playlist();
         newPlaylist.setName(name);
         newPlaylist.setType(type);
-        newPlaylist.setImgLink(imageUrl); // ✅ Store Image URL
-        newPlaylist.setImageId(publicId);   // ✅ Store Image Public ID (for deletion)
+        newPlaylist.setImgLink(imageUrl); 
+        newPlaylist.setImageId(publicId);  
         newPlaylist.setSongs(songs);
         
 		playlistRepository.save(newPlaylist);

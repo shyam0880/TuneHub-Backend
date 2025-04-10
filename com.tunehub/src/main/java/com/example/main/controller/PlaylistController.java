@@ -38,7 +38,7 @@ public class PlaylistController {
 	            @RequestParam("name") String name,
 	            @RequestParam("type") String type,
 	            @RequestParam("image") MultipartFile image,  // Accept file
-	            @RequestParam("songs") String songsJson) {
+	            @RequestParam("songs") String songsJson)  throws Exception  {
 		try {
 			String message = playlistService.addPlaylist(name, type, image, songsJson);
             return ResponseEntity.ok(message);

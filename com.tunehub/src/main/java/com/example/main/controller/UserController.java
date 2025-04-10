@@ -8,9 +8,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.main.dto.SongDTO;
 import com.example.main.entity.Song;
@@ -21,46 +24,41 @@ import com.example.main.services.UsersService;
 import jakarta.servlet.http.HttpSession;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@CrossOrigin(origins = "*")
+
 @Controller
 public class UserController {
 	@Autowired
-	UsersService srv;
+	UsersService usersService;
 	
 	@Autowired
 	SongService songService;
 	
 	@PostMapping("/register")
-	public String addUsers(@ModelAttribute Users user)
+	public ResponseEntity<?> addUsers(@RequestBody Users user)
 	{
-		boolean userStatus = srv.emailExists(user.getEmail());
-		if(userStatus==false)
-		{
-			srv.addUser(user);
-			System.out.println("user added");
-		}
-		else
-		{
-			System.out.println("User Already exists");
-		}
-		return "home";
+		if(usersService.emailExists(user.getEmail())){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Email is already registered");
+        }else {
+            String message = usersService.addUser(user);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(message);
+        }
 		
 	}
 	@PostMapping("/signin")
-	public ResponseEntity<?> signin(@RequestBody Users user) { //,HttpSession session
+	public ResponseEntity<?> signin(@RequestBody Users user) {
 		String email = user.getEmail();
 		String password = user.getPassword();
-		if(srv.emailExists(email)) {
-			if(srv.validateUser(email, password)==true) {
+		if(usersService.emailExists(email)) {
+			if(usersService.validateUser(email, password)==true) {
 				
-				String role = srv.getRole(email);
-				
-				//Creating session
-//				session.setAttribute("email", email);
+				String role = usersService.getRole(email);
 			
-				return ResponseEntity.ok(srv.getUser(email));
+				return ResponseEntity.ok(usersService.getUser(email));
 				
 			}
 			else {
@@ -73,46 +71,62 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("/validate")
-	//public String validate(@RequestParam("email") String email,@RequestParam("password") String password) we can use this also
-	public String validate(@RequestParam String email,String password,HttpSession session, Model model)
-	{
-		if(srv.validateUser(email,password)== true)
-		{
-			String role = srv.getRole(email);
-			
-			//Creating session
-			session.setAttribute("email", email);
-			
-			if(role.equals("admin"))
-			{
-				return "adminhome";
-			}
-			else
-			{
-				Users user = srv.getUser(email);
-				boolean userStatus = user.isPremium();
-				model.addAttribute("isPremium", userStatus);
-				
-				//for song view
-				List <SongDTO> songList = songService.fetchAllSongs();
-				model.addAttribute("songs", songList);
-				return "customerhome";				
-			}
-		}
-		else
-		{
-			return "login";
-		}
+	@PutMapping("/user/{id}/update-photo")
+	public ResponseEntity<?> updateUserPhoto(@PathVariable int id, @RequestParam("image") MultipartFile image) {
+	    try {
+	        usersService.updateUserPhoto(id, image);
+	        return ResponseEntity.ok("Profile image updated successfully");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body("Error updating image: " + e.getMessage());
+	    }
 	}
 	
-	
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate();
-		return "login";
+	@GetMapping("/users")
+	public ResponseEntity<List<Users>> getAllUsers() {
+	    return ResponseEntity.ok(usersService.getAllUsers());
 	}
 	
+	@GetMapping("/user/{id}")
+	public ResponseEntity<?> getUserById(@PathVariable int id) {
+	    Users user = usersService.findById(id);
+	    if (user != null) {
+	        return ResponseEntity.ok(user);
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	    }
+	}
 	
+	@PutMapping("/user/{id}")
+	public ResponseEntity<?> updateUser(@PathVariable int id, @RequestBody Users updatedUser) {
+	    Users existingUser = usersService.findById(id);
+	    if (existingUser != null) {
+	        existingUser.setUsername(updatedUser.getUsername());
+	        existingUser.setAddress(updatedUser.getAddress());
+	        existingUser.setGender(updatedUser.getGender());
+	        // Don't update email/password/role here unless intended
+	        usersService.updateUser(existingUser);
+	        return ResponseEntity.ok("User updated successfully");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	    }
+	}
+	
+	@DeleteMapping("/user/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable int id) {
+	    Users user = usersService.findById(id);
+	    if (user != null) {
+	        usersService.deleteUser(id);
+	        return ResponseEntity.ok("User deleted successfully");
+	    } else {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+	    }
+	}
+
+
+
+
+
+
 
 }

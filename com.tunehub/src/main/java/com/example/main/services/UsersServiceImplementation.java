@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.example.main.dto.UserDTO;
 import com.example.main.entity.Users;
 import com.example.main.repository.UsersRepositories;
 
@@ -98,8 +99,9 @@ public class UsersServiceImplementation implements UsersService{
 	}
 
 	@Override
-	public Users getUser(String email) {
-		return usersRepositories.findByEmail(email);
+	public UserDTO getUser(String email) {
+		Users user = usersRepositories.findByEmail(email);
+		return convertToDTO(user);
 	}
 
 	@Override
@@ -135,6 +137,21 @@ public class UsersServiceImplementation implements UsersService{
 	@Override
 	public List<Users> getAllUsers() {
 		return usersRepositories.findAll();
+	}
+	
+	private UserDTO convertToDTO(Users user) {
+		UserDTO songdto = new UserDTO(
+				user.getId(),
+				user.getUsername(),
+				user.getEmail(),
+				user.getGender(),
+				user.getRole(),
+				user.getAddress(),
+				user.getImage(),
+				user.isPremium()
+				);
+		return songdto;
+		
 	}
 
 	

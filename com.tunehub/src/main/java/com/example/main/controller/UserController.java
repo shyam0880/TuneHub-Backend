@@ -54,12 +54,9 @@ public class UserController {
 		String email = user.getEmail();
 		String password = user.getPassword();
 		if(usersService.emailExists(email)) {
-			if(usersService.validateUser(email, password)==true) {
-				
+			if(usersService.validateUser(email, password)==true) {				
 				String role = usersService.getRole(email);
-			
 				return ResponseEntity.ok(usersService.getUser(email));
-				
 			}
 			else {
 				return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login fails");

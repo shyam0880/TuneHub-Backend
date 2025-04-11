@@ -17,7 +17,7 @@ public class SongDTO {
     public SongDTO() {}
 
     // Parameterized constructor
-    public SongDTO(int id, String name, String artist,int artistId, String genre, String link, String imgLink,boolean likeSong, List<Integer> playlistIds) {
+    public SongDTO(int id, String name, String genre, int artistId, String artist, String link, String imgLink,boolean likeSong, List<Integer> playlistIds) {
         this.id = id;
         this.name = name;
         this.artist = artist;

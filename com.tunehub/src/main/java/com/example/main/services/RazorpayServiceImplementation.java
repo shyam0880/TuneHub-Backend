@@ -1,4 +1,6 @@
 package com.example.main.services;
+import com.example.main.dto.UserDTO;
+import com.example.main.entity.Users;
 import com.razorpay.Order;
 import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
@@ -6,7 +8,10 @@ import com.razorpay.RazorpayException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +72,18 @@ public class RazorpayServiceImplementation implements RazorpayService {
             }
         }
         return "Ignored event";
+    }
+    
+    @Override
+    public UserDTO makeUserPremium(String email) {
+        Users user = usersService.findByEmail(email);
+        if (user != null) {
+            user.setPremium(true);
+//            user.setRole("premium");
+            usersService.updateUser(user);
+            return usersService.getUser(user.getEmail());
+        }
+        return null;
     }
     
 }

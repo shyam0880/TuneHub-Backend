@@ -154,6 +154,11 @@ public class UsersServiceImplementation implements UsersService{
 		
 	}
 
+	@Override
+	public Users findByEmail(String email) {
+		return usersRepositories.findByEmail(email);	
+	}
+
 	
 	
 

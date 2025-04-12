@@ -64,7 +64,7 @@ public class UserController {
 			
 		}
 		else {
-			return ResponseEntity.ok("User not Exist");
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User Not Exist");
 		}
 	}
 	

@@ -14,6 +14,7 @@ public interface UsersService {
 	public boolean validateUser(String email, String password);
 	public String getRole(String email);
 	public UserDTO getUser(String email);
+	public Users findByEmail(String email);
 	public void updateUser(Users user);
 	public boolean updatePrimeStatus(String email);
 	public Users findById(long id);

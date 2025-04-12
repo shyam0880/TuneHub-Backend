@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.main.dto.UserDTO;
+import com.example.main.entity.Users;
 import com.example.main.services.RazorpayService;
 import com.example.main.services.UsersService;
 
@@ -54,8 +56,12 @@ public class PaymentController {
             return ResponseEntity.badRequest().body("Order creation failed: " + e.getMessage());
         }
     }
-
-	
-	
-	
+    
+    //Temporary used
+    @PutMapping("/make-premium")
+    public ResponseEntity<UserDTO> makeUserPremium(@RequestBody Map<String, String> payload) {
+    	String email = payload.get("email");
+        UserDTO updatedUser = razorpayService.makeUserPremium(email);
+        return ResponseEntity.ok(updatedUser);
+    }	
 }

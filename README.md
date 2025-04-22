@@ -1,123 +1,163 @@
-# Tunehub
-### TuneHub: Web Development Project Summary
+# 🎶 TuneHub Backend
 
-TuneHub is a music streaming web application built with Java and Spring Boot, utilizing the Model-View-Controller (MVC) architecture for a structured and efficient codebase. It features secure user authentication, a comprehensive music library, and playlist management, all backed by a MySQL database. The responsive design ensures an optimal experience across various devices. By combining robust backend technology with a user-friendly interface, TuneHub offers users an engaging and seamless music listening experience.
+A music streaming web application backend built with **Java, Spring Boot**, and **MySQL**, providing user management, song management, playlist management, and artist support via a RESTful API. This backend serves as the core for the **TuneHub Frontend** React application.
 
-## Requirements
+---
 
-For building and running the application you need:
-- [Spring Tools] (<a href="https://cdn.spring.io/spring-tools/release/STS4/4.22.1.RELEASE/dist/e4.31/spring-tool-suite-4-4.22.1.RELEASE-e4.31.0-win32.win32.x86_64.self-extracting.jar">Here</a>)
-- [My SQL] (<a href="https://dev.mysql.com/downloads/file/?id=526927">Here</a>)
+## 📦 Tech Stack
 
-<br>
+- ⚙️ Java 21
+- ☕ Spring Boot 3.x
+- 🗄️ MySQL
+- 🌐 Spring Security (basic configuration)
+- ☁️ Cloudinary (for song and image uploads)
+- 📦 Spring Data JPA (ORM)
+- 🔌 RESTful API
 
-### It follow the MVC architecture flow -(as show in below picture)
-<br>
-<img align="center" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/mvc.png">
-<br>
-<br>
+---
+## 📚 Dependencies
 
-### Structure that follow:
-<br>
-<img align="center" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/structure.png">
-<br>
+- Spring Boot Starter Web
+- Spring Boot Starter Data JPA
+- MySQL Connector
+- Cloudinary Java SDK (v1.38.0)
+- Razorpay Java SDK (v1.4.8)
+- Spring Boot DevTools
+- JSON Web Token (planned, using jjwt)
+- Spring Boot Starter Test
 
-## Here are Some pictures of websites
+---
 
-<h4> Home page </h4>
-<img align="center" width="500" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/home.png">
-<br>
-
-###
-
-<div>
-  <h4 align="center"> LogIN and Registration page</h4>
-  <img width="500" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/login.png"/>
-  <img width="500" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/registration.png"/>
-  <br>
-</div>
-
-
-### We have three option while login 
-
-* As Admin
-* As client (Non premium)
-* As client (Premium)
-
-<h1 align="center"> ->As admin<- </h1>
-<img align="left" width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/adminhome.png"/>
-
-### We got four feature
-
-- Add New Song
-- View All Songs
-- Create Playlist
-- View Playlist
-
-  <br>
-  <br>
-
-### Thsoe are the image
-* Add new songs
-  <br>
-  <img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/addsong.png"/>
-  <br>
-* View All Songs
-  <br>
-  <img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/dispSong.png"/>
-  <br>
-* Create Playlist
-  <br>
-  <img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/crtPlaylist.png"/>
-  <br>
-* View Playlist
-  <br>
-  <img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/dispPlaylist.png"/>
-  <br>
-  
-<h1 align="center"> ->As client (Non premium)<- </h1>
-<img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/nonprem.png"/>
-
-### <p> Note: </p>
-To make this premium you have to buy the package for that we use Razorpay Gateway Integration with SpringBoot
- * Payment page
-   <br>
-   <img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/payment.png"/>
-   <br>
- * Payment
-   <br>
-   <img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/razpay.png"/>
-   <br>
-
-<h1 align="center"> ->As client (Premium)<- </h1>
-  
-### <p> Note: </p>
-Onces we paid, same client can able to access music
-<br>
-<img width="600" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/prem.png"/>
-
-<br>
-
-# Backend
-
-We used My SQL, This is our database Name : <b> tunehub_db </b>
-
-Table which are created for this operations are :-
-<br>
-
-```shell
-SHOW TABLES ;
+## 📑 Project Structure
+```bash
+src/
+ └── main/
+     ├── java/
+     │   └── com/
+     │       └── tunehub/
+     │           ├── config/          // Currently using for cloudinary and webconfig for cross-mapping
+     │           ├── controller/      // REST Controllers
+     │           ├── dto/             // Data Transfer Objects
+     │           ├── entity/          // JPA Entities
+     │           ├── repository/      // JPA Repositories
+     │           ├── service/         // Business logic services
+     │           └── TunehubApplication.java  // Main Spring Boot application class
+     │
+     └── resources/
+         ├── application.yml   // App configuration
+         └── static/                  // Static resources (if any)
 ```
-<br>
-<img width="200" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/tabledb.png"/>
-<br>
 
-```shell
-SELET * FROM USERS ;
+---
+
+
+## ⚙️ Features
+
+- 🎵 Song upload, update, delete, and streaming APIs
+- 🎨 Artist management APIs
+- 🎶 Playlist creation, update, and management APIs
+- 📄 File uploads (song files and images) to **Cloudinary**
+- 📈 RESTful API design
+- 🔒 Secure password encryption with **BCrypt** (if used)
+
+---
+
+## 📡 API Endpoints
+
+### 🎶 Songs
+- `POST /songs` → Add a new song
+- `GET /songs` → Get all songs
+- `PUT /songs/{id}` → Update song by ID
+- `DELETE /songs/{id}` → Delete song by ID
+
+### 👤 Users
+- `POST /users/register` → Register new user
+- `PUT /users/{id}` → Update user
+- `DELETE /users/{id}` → Delete user
+
+### 📃 Playlists
+- `POST /playlists` → Create playlist
+- `GET /playlists` → Get all playlists
+- `DELETE /playlists/{id}` → Delete playlist
+
+### 📤 Media Upload
+- `POST /upload/image` → Upload image to Cloudinary
+- `POST /upload/audio` → Upload song to Cloudinary
+
+### 💳 Payments
+- `POST /payment/create` → Create Razorpay order
+- `POST /payment/verify` → Verify payment signature
+
+
+---
+
+## 🗄️ Database
+
+Using **MySQL** database `tunehub_db`
+
+### Example Tables:
+- `users`
+- `songs`
+- `playlists`
+- `artists`
+
+---
+
+## 🛠️ Setup & Installation
+
+### 📦 Requirements
+- Java 21
+- Maven 3.9+
+- MySQL 8+
+- Cloudinary Account (for file uploads)
+
+### 🚀 Installation Steps
+
+1️⃣ Clone the project:
+```bash
+git clone https://github.com/shyam0880/TuneHub-Backend.git
+cd TuneHub-Backend
+
 ```
-<br>
-Actual users <br>
-<img width="800" src="https://github.com/shyam0880/Tunehub/blob/main/Readme%20image/usersdb.png"/>
+2️⃣ Configure your database credentials in src/main/resources/application.yml
+## applications.yml
+```shell
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  datasource:
+    url: ${DB_TH_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
+CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+
+razorpay:
+  key:
+    id: ${RAZORPAY_KEY_ID}
+    secret: ${RAZORPAY_SECRET}
+
+```
+3️⃣ Run the application via
+```shell
+./mvnw spring-boot:run
+```
+or  
+Click "Run" on **Spring Suite Tool 4** or **IntelliJ** etc.
+
+### Set Environment Variable
+```bash
+Tool Bar > Run > Run Configuration > Environment > Add > (add variable and value) > Apply > Run
+```
 
 
 

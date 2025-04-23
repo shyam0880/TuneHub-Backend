@@ -1,6 +1,9 @@
 # 🎶 TuneHub Backend
 
-A music streaming web application backend built with **Java, Spring Boot**, and **MySQL**, providing user management, song management, playlist management, and artist support via a RESTful API. This backend serves as the core for the **TuneHub Frontend** React application.
+A music streaming web application backend built with **Java, Spring Boot**, and **MySQL**, providing user management, song management, playlist management, and artist support via a RESTful API. This backend is the core for the **TuneHub Frontend** React application.
+  
+👉 Check out the [TuneHub Frontend](https://github.com/shyam0880/TuneHub-Frontend) for the React-based UI and client logic.
+
 
 ---
 

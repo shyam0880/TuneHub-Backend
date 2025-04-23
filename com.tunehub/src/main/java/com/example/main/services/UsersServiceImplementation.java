@@ -40,6 +40,18 @@ public class UsersServiceImplementation implements UsersService{
 	    }
 	}
 	
+	 @Override
+	    public void removeProfileImage(Long userId) {
+	        Users user = usersRepositories.findById(userId);
+
+	        if (user.getImageId() != null) {
+	            deleteImage(user.getImageId());
+	            user.setImageId(null);
+	            user.setImage(null);
+	            usersRepositories.save(user);
+	        }
+	    }
+	
 	@Override
 	public String addUser(Users user) {
 		usersRepositories.save(user);

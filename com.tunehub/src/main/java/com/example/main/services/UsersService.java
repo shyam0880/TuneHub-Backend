@@ -21,5 +21,6 @@ public interface UsersService {
 	public void updateUserPhoto(int id, MultipartFile image);
 	public void deleteUser(int id);
 	public List<Users> getAllUsers();
+	void removeProfileImage(Long userId);
 
 }

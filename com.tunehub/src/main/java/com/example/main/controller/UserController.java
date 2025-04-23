@@ -79,6 +79,12 @@ public class UserController {
 	    }
 	}
 	
+	 @DeleteMapping("/{id}/remove-image")
+	 public ResponseEntity<String> removeProfileImage(@PathVariable Long id) {
+	        usersService.removeProfileImage(id);
+	        return ResponseEntity.ok("Image removed successfully.");
+	 }
+	
 	@GetMapping("/users")
 	public ResponseEntity<List<Users>> getAllUsers() {
 	    return ResponseEntity.ok(usersService.getAllUsers());

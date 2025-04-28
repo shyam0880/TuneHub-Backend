@@ -71,8 +71,8 @@ public class UserController {
 	@PutMapping("/user/{id}/update-photo")
 	public ResponseEntity<?> updateUserPhoto(@PathVariable int id, @RequestParam("image") MultipartFile image) {
 	    try {
-	        usersService.updateUserPhoto(id, image);
-	        return ResponseEntity.ok("Profile image updated successfully");
+	        String imageUrl = usersService.updateUserPhoto(id, image);
+	        return ResponseEntity.ok(imageUrl);
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("Error updating image: " + e.getMessage());

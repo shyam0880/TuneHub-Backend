@@ -59,7 +59,7 @@ public class UsersServiceImplementation implements UsersService{
 	}
 	
 	@Override
-	public void updateUserPhoto(int id, MultipartFile image) {
+	public String updateUserPhoto(int id, MultipartFile image) {
 	    Users user = usersRepositories.findById(id);
 
 	    // Delete existing image if any
@@ -75,6 +75,8 @@ public class UsersServiceImplementation implements UsersService{
 	    user.setImage(imageUrl);
 	    user.setImageId(imageId);
 	    usersRepositories.save(user);
+	    
+	    return imageUrl;
 	}
 	
 

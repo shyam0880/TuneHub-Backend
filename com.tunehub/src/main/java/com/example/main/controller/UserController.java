@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.main.dto.SongDTO;
+import com.example.main.dto.UserDTO;
 import com.example.main.entity.Song;
 import com.example.main.entity.Users;
 import com.example.main.services.SongService;
@@ -55,7 +56,6 @@ public class UserController {
 		String password = user.getPassword();
 		if(usersService.emailExists(email)) {
 			if(usersService.validateUser(email, password)==true) {				
-				String role = usersService.getRole(email);
 				return ResponseEntity.ok(usersService.getUser(email));
 			}
 			else {
@@ -71,8 +71,8 @@ public class UserController {
 	@PutMapping("/user/{id}/update-photo")
 	public ResponseEntity<?> updateUserPhoto(@PathVariable int id, @RequestParam("image") MultipartFile image) {
 	    try {
-	        String imageUrl = usersService.updateUserPhoto(id, image);
-	        return ResponseEntity.ok(imageUrl);
+	        usersService.updateUserPhoto(id, image);
+	        return ResponseEntity.ok("Profile Update Successfully");
 	    } catch (Exception e) {
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 	                .body("Error updating image: " + e.getMessage());
@@ -92,7 +92,7 @@ public class UserController {
 	
 	@GetMapping("/user/{id}")
 	public ResponseEntity<?> getUserById(@PathVariable int id) {
-	    Users user = usersService.findById(id);
+	    UserDTO user = usersService.findUserDTOById(id);
 	    if (user != null) {
 	        return ResponseEntity.ok(user);
 	    } else {
@@ -125,11 +125,4 @@ public class UserController {
 	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
 	    }
 	}
-
-
-
-
-
-
-
 }

@@ -18,7 +18,8 @@ public interface UsersService {
 	public void updateUser(Users user);
 	public boolean updatePrimeStatus(String email);
 	public Users findById(long id);
-	public String updateUserPhoto(int id, MultipartFile image);
+	public UserDTO findUserDTOById(long id);
+	public void updateUserPhoto(int id, MultipartFile image);
 	public void deleteUser(int id);
 	public List<Users> getAllUsers();
 	void removeProfileImage(Long userId);

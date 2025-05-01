@@ -36,6 +36,11 @@ public class UserController {
 	
 	@Autowired
 	SongService songService;
+		
+	@GetMapping("/api/ping")
+	public ResponseEntity<String> ping() {
+	    return ResponseEntity.ok("pong");
+	}
 	
 	@PostMapping("/register")
 	public ResponseEntity<?> addUsers(@RequestBody Users user)

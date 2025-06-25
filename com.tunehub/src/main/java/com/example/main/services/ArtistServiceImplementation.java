@@ -19,33 +19,33 @@ import com.example.main.repository.SongRepository;
 
 @Service
 public class ArtistServiceImplementation implements ArtistService {
-	
-	@Autowired
-	private ArtistRepository artistRepository;
-	
-	@Autowired
-	private SongRepository songRepository;
-	
-	@Autowired
+
+    @Autowired
+    private ArtistRepository artistRepository;
+
+    @Autowired
+    private SongRepository songRepository;
+
+    @Autowired
     private Cloudinary cloudinary;
-	
-	@Override
+
+    @Override
     public List<ArtistDTO> getAllArtists() {
         return artistRepository.findAll()
                 .stream()
-                .map(this::convertToDTO) // ✅ Use convertToDTO directly
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public ArtistDTO getArtistById(int id) {
-        Artist artist = artistRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Artist not found"));
-        return convertToDTO(artist); // ✅ Use convertToDTO directly
+    public ArtistDTO getArtistById(Long id) {
+        return artistRepository.findById(id)
+                .map(this::convertToDTO)
+                .orElse(null);
     }
 
     @Override
-    public Artist addArtist(String name, MultipartFile image) {
+    public ArtistDTO addArtist(String name, MultipartFile image) {
         Artist artist = new Artist();
         artist.setName(name);
 
@@ -55,32 +55,69 @@ public class ArtistServiceImplementation implements ArtistService {
             artist.setImageId((String) uploadResult.get("public_id"));
         }
 
-        return artistRepository.save(artist);
+        artist = artistRepository.save(artist);
+        return convertToDTO(artist);
     }
 
     @Override
-    public Artist updateArtist(int id, String name, MultipartFile image) {
-        Artist artist = artistRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Artist not found"));
+    public Map<Boolean, Object> updateArtist(Long id, String name, MultipartFile image) {
+        Optional<Artist> optionalArtist = artistRepository.findById(id);
+        Map<Boolean, Object> data = new HashMap<>();
 
-        artist.setName(name);
+        if (optionalArtist.isEmpty()) {
+            data.put(false, "Artist not found");
+            return data;
+        }
+
+        Artist artist = optionalArtist.get();
+
+        // Optional: check if new name already exists (only if name changed)
+        if (name != null && !name.equalsIgnoreCase(artist.getName())) {
+            Optional<Artist> existingByName = artistRepository.findByName(name);
+            if (existingByName.isPresent()) {
+                data.put(false, "Artist with this name already exists");
+                return data;
+            }
+            artist.setName(name);
+        }
 
         if (image != null && !image.isEmpty()) {
-            // Delete old image from Cloudinary if it exists
             if (artist.getImageId() != null) {
                 deleteImage(artist.getImageId());
             }
-            // Upload new image
             Map<String, Object> uploadResult = uploadImage(image);
             artist.setImage((String) uploadResult.get("secure_url"));
             artist.setImageId((String) uploadResult.get("public_id"));
         }
 
-        return artistRepository.save(artist);
+        artist = artistRepository.save(artist);
+        data.put(true, convertToDTO(artist));
+        return data;
+    }
+
+    @Override
+    public boolean deleteArtist(Long id) {
+        Optional<Artist> optionalArtist = artistRepository.findById(id);
+        if (optionalArtist.isEmpty()) return false;
+
+        Artist artist = optionalArtist.get();
+
+        List<Song> songsWithArtist = songRepository.findByArtist(artist);
+        for (Song song : songsWithArtist) {
+            song.setArtist(null);
+        }
+        songRepository.saveAll(songsWithArtist);
+
+        if (artist.getImageId() != null) {
+            deleteImage(artist.getImageId());
+        }
+
+        artistRepository.delete(artist);
+        return true;
     }
 
     @SuppressWarnings("unchecked")
-	private Map<String, Object> uploadImage(MultipartFile image) {
+    private Map<String, Object> uploadImage(MultipartFile image) {
         try {
             return cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
         } catch (IOException e) {
@@ -98,43 +135,22 @@ public class ArtistServiceImplementation implements ArtistService {
 
     private ArtistDTO convertToDTO(Artist artist) {
         @SuppressWarnings("null")
-		List<SongDTO> songDTOs = Optional.ofNullable(artist.getSongs())  // ✅ Prevent null pointer
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(song -> new SongDTO(
-                song.getId(),
-                song.getName(),
-                song.getGenre(),
-                song.getArtist() != null ? song.getArtist().getId() : null, // ✅ Prevent null artist
-                song.getArtist() != null ? song.getArtist().getName() : null,
-                song.getLink(),
-                song.getImgLink(),
-                song.getLikeSong(),
-                null
-            ))
-            .collect(Collectors.toList());
+		List<SongDTO> songDTOs = Optional.ofNullable(artist.getSongs())
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(song -> new SongDTO(
+                        song.getId(),
+                        song.getName(),
+                        song.getArtist() != null ? song.getArtist().getName() : null,
+                        song.getArtist() != null ? song.getArtist().getId() : null,
+                        song.getGenre(),
+                        song.getLink(),
+                        song.getImgLink(),
+                        song.getLikeSong(),
+                        null
+                ))
+                .collect(Collectors.toList());
 
         return new ArtistDTO(artist.getId(), artist.getName(), artist.getImage(), artist.getImageId(), songDTOs);
-    }
-    
-    @Override
-    public void deleteArtist(int id) {
-        Artist artist = artistRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Artist not found"));
-
-        // Unlink artist from songs
-        List<Song> songsWithArtist = songRepository.findByArtist(artist);
-        for (Song song : songsWithArtist) {
-            song.setArtist(null); // Or set to a default artist here
-        }
-        songRepository.saveAll(songsWithArtist);
-
-        // Delete image if available
-        if (artist.getImageId() != null) {
-            deleteImage(artist.getImageId());
-        }
-
-        // Finally delete the artist
-        artistRepository.delete(artist);
     }
 }

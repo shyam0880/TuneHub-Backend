@@ -1,241 +1,271 @@
 package com.example.main.services;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+import com.example.main.dto.PlaylistDTO;
+import com.example.main.entity.Playlist;
+import com.example.main.entity.Song;
+import com.example.main.entity.Users;
+import com.example.main.repository.PlaylistRepository;
+import com.example.main.repository.SongRepository;
+import com.example.main.repository.UsersRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
-import com.example.main.dto.PlaylistDTO;
-import com.example.main.dto.SongDTO;
-import com.example.main.entity.Playlist;
-import com.example.main.entity.Song;
-import com.example.main.repository.PlaylistRepository;
-import com.example.main.repository.SongRepository;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class PlaylistServiceImplementation implements PlaylistService{
+public class PlaylistServiceImplementation implements PlaylistService {
 
-	@Autowired
-	PlaylistRepository playlistRepository;
-	
-	@Autowired
-	SongRepository songRepository;
-	
-	@Autowired
-	SongService songService;
-	
+    @Autowired
+    private PlaylistRepository playlistRepository;
+
+    @Autowired
+    private UsersRepository usersRepository;
+
+    @Autowired
+    private SongRepository songRepository;
+    
 	@Autowired
 	Cloudinary cloudinary;
 	
 	@Autowired
-    private ObjectMapper objectMapper;
-	
+	private ObjectMapper objectMapper;
+    
 	@Override
-	public String addPlaylist(String name, String type, MultipartFile image, String songsJson) throws Exception {
-		Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
+	public String createPlaylist(String name, String type, Long userId, MultipartFile image, String songsJson) {
+	    if (name == null || type == null || image == null || songsJson == null)
+	        return "Invalid input data";
 
-        String imageUrl = (String) uploadResult.get("secure_url"); 
-        String publicId = (String) uploadResult.get("public_id"); 
+	    Optional<Users> userOptional = usersRepository.findById(userId);
+	    if (userOptional.isEmpty()) return "User not found";
 
-        
-     // ✅ Convert JSON string (songs) to List
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<Integer> songIds = objectMapper.readValue(songsJson, new TypeReference<List<Integer>>() {});
-        List<Song> songs = songRepository.findAllById(songIds);
-        
-        Playlist newPlaylist = new Playlist();
-        newPlaylist.setName(name);
-        newPlaylist.setType(type);
-        newPlaylist.setImgLink(imageUrl); 
-        newPlaylist.setImageId(publicId);  
-        newPlaylist.setSongs(songs);
-        
-		playlistRepository.save(newPlaylist);
-		
-		for (Song song : songs) {
-        	songService.updateSong(song); 
-        }
-		return "Playlist added successfully!";
-	}
-	
-	public PlaylistDTO findById(int id) {
-	    Playlist playlist = playlistRepository.findById(id);
-	    return convertToPlaylistDTO(playlist);
-	}
-	
-	@Override
-	public String addSongToPlaylist(int playlistId, int songId) {
-	    Playlist playlist = playlistRepository.findById(playlistId);
-	    Song song = songRepository.findById(songId);
+	    String imageUrl = null, publicId = null;
 
-	    if (playlist == null || song == null) {
-	        return "Playlist or Song not found!";
-	    }
-
-	    if (!playlist.getSongs().contains(song)) {
-	        playlist.getSongs().add(song);
-	        song.getPlaylists().add(playlist);
-	        playlistRepository.save(playlist);
-	        return "Song added to playlist successfully!";
-	    }
-
-	    return "Song already exists in playlist!";
-	}
-
-
-	@Override
-	public String updatePlaylist(int id, String name, String type, MultipartFile image, String songsJson) throws Exception {
-	    Playlist existingPlaylist = playlistRepository.findById(id);
-
-	    if (existingPlaylist == null) {
-	        return "Playlist not found!";
-	    }
-
-	    // Upload new image if provided
-	    if (image != null && !image.isEmpty()) {
-	        // Delete old image
-	        cloudinary.uploader().destroy(existingPlaylist.getImageId(), ObjectUtils.emptyMap());
-
-	        // Upload new one
+	    try {
 	        Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
-	        String imageUrl = (String) uploadResult.get("secure_url");
-	        String publicId = (String) uploadResult.get("public_id");
+	        imageUrl = (String) uploadResult.get("secure_url");
+	        publicId = (String) uploadResult.get("public_id");
 
-	        existingPlaylist.setImgLink(imageUrl);
-	        existingPlaylist.setImageId(publicId);
+	        Set<Long> songIds = objectMapper.readValue(songsJson, new TypeReference<>() {});
+	        Set<Song> songs = new HashSet<>(songRepository.findAllById(songIds));
+
+	        if (songs.isEmpty()) {
+	            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+	            return "No valid songs found";
+	        }
+
+	        Playlist playlist = new Playlist();
+	        playlist.setName(name);
+	        playlist.setType(type);
+	        playlist.setUser(userOptional.get());
+	        playlist.setImgLink(imageUrl);
+	        playlist.setImageId(publicId);
+	        playlist.setSongs(songs);
+
+	        playlistRepository.save(playlist);
+
+	        return "Playlist created successfully";
+
+	    } catch (Exception e) {
+	        if (publicId != null) {
+	            try {
+	                cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
+	            } catch (IOException ex) {
+	                ex.printStackTrace();
+	            }
+	        }
+
+	        throw new RuntimeException("Failed to create playlist: " + e.getMessage(), e);
 	    }
-
-	    existingPlaylist.setName(name);
-	    existingPlaylist.setType(type);
-
-	    // ✅ Update songs
-	    ObjectMapper objectMapper = new ObjectMapper();
-	    List<Song> updatedSongs = objectMapper.readValue(songsJson, new TypeReference<List<Song>>() {});
-	    existingPlaylist.setSongs(updatedSongs);
-
-	    playlistRepository.save(existingPlaylist);
-
-	    for (Song song : updatedSongs) {
-	        songService.updateSong(song);
-	    }
-
-	    return "Playlist updated successfully!";
 	}
 
 
-	private PlaylistDTO convertToPlaylistDTO(Playlist playlist) {
-	    List<SongDTO> songDTOs = convertSongsToDTOs(playlist.getSongs(), List.of(playlist));
-	    return new PlaylistDTO(
-	        playlist.getId(),
-	        playlist.getName(),
-	        playlist.getType(),
-	        playlist.getImgLink(),
-	        songDTOs
-	    );
-	}
+    @Override
+    public String updatePlaylist(Long playlistId, String name, String type, MultipartFile image, String songsJson) throws Exception {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        if (optionalPlaylist.isEmpty()) {
+            return "Playlist not found!";
+        }
 
-	@SuppressWarnings("null")
-	private List<SongDTO> convertSongsToDTOs(List<Song> songs, List<Playlist> playlists) {
-	    return songs.stream()
-	        .map(song -> new SongDTO(
-	            song.getId(),
-	            song.getName(),
-	            song.getGenre(),
-	            song.getArtist() != null ? song.getArtist().getId() : null,  
-	            song.getArtist() != null ? song.getArtist().getName() : "Unknown", 
-	            song.getLink(),
-	            song.getImgLink(),
-	            song.getLikeSong(),
-	            getPlaylistIdsContainingSong(song, playlists)
-	        ))
-	        .collect(Collectors.toList());
-	}
+        Playlist existingPlaylist = optionalPlaylist.get();
 
+        if (image != null && !image.isEmpty()) {
+            try {
+                if (existingPlaylist.getImageId() != null) {
+                    cloudinary.uploader().destroy(existingPlaylist.getImageId(), ObjectUtils.emptyMap());
+                }
 
-	private List<Integer> getPlaylistIdsContainingSong(Song song, List<Playlist> playlists) {
-	    return playlists.stream()
-	        .filter(p -> p.getSongs().contains(song))
-	        .map(Playlist::getId)
-	        .collect(Collectors.toList());
-	}
+                Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
+                String imageUrl = (String) uploadResult.get("secure_url");
+                String publicId = (String) uploadResult.get("public_id");
 
-	
-
-	@Override
-	public List<PlaylistDTO> fetchAllPlaylist() {
-	    List<Playlist> playlists = playlistRepository.findAllPlaylistsWithSongs();
-
-	    return playlists.stream()
-	        .map(playlist -> {
-	            List<SongDTO> songDTOs = playlist.getSongs().stream()
-	                .map(song -> new SongDTO(
-	                    song.getId(),
-	                    song.getName(),
-	                    song.getGenre(),
-	                    song.getArtist().getId(), 
-	                    song.getArtist().getName(),
-	                    song.getLink(),
-	                    song.getImgLink(),
-	                    song.getLikeSong(),
-	                    playlists.stream()
-	                        .filter(p -> p.getSongs().contains(song))
-	                        .map(Playlist::getId)
-	                        .collect(Collectors.toList())
-	                ))
-	                .collect(Collectors.toList());
-
-	            return new PlaylistDTO(
-	                playlist.getId(),
-	                playlist.getName(),
-	                playlist.getType(),
-	                playlist.getImgLink(),
-	                songDTOs
-	            );
-	        })
-	        .collect(Collectors.toList());
-	}
-
-
-	public boolean existById(int id) {
-		return playlistRepository.existsById(id);
-	}
-
-	@Override
-	public String deleteById(int id) throws Exception{
-		Playlist playlist = playlistRepository.findById(id);
-		String publicId = playlist.getImageId();
-
-		
-		 // ✅ Delete from Cloudinary
-        cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
-		playlistRepository.deleteById(id);
-		return "Playlist delete Successfully";
-	}
-	
-	public String removeSongFromPlaylist(int playlistId, int songId) {
-        Playlist playlist = playlistRepository.findById(playlistId);
-        Song song = songRepository.findById(songId);
-
-        if (playlistRepository.existsById(playlistId) && songRepository.existsById(songId)) {
-
-            if (playlist.getSongs().contains(song)) {
-                playlist.getSongs().remove(song); 
-                song.getPlaylists().remove(playlist);  
-                
-                playlistRepository.save(playlist); 
-                return "Song removed from playlist successfully.";
-            } else {
-                return "Song not found in the playlist.";
+                existingPlaylist.setImgLink(imageUrl);
+                existingPlaylist.setImageId(publicId);
+            } catch (Exception e) {
+                throw new RuntimeException("Image upload failed", e);
             }
         }
-        return "Playlist or Song not found.";
+
+        if (name != null) existingPlaylist.setName(name);
+        if (type != null) existingPlaylist.setType(type);
+
+        if (songsJson != null && !songsJson.isBlank()) {
+            try {
+                Set<Long> songIds = objectMapper.readValue(songsJson, new TypeReference<>() {});
+                Set<Song> updatedSongs = new HashSet<>(songRepository.findAllById(songIds));
+                existingPlaylist.setSongs(updatedSongs);
+            } catch (Exception e) {
+                return "Invalid song data!";
+            }
+        }
+
+        playlistRepository.save(existingPlaylist);
+        return "Playlist updated successfully!";
     }
 
+
+    @Override
+    public List<PlaylistDTO> getUserPlaylists(Long userId) {
+        Optional<Users> userOptional = usersRepository.findById(userId);
+        if (userOptional.isEmpty()) return Collections.emptyList();
+
+        Users user = userOptional.get();
+        List<Playlist> playlists = playlistRepository.findByUser(user);
+
+        return playlists.stream().map(playlist -> {
+            List<Long> songIds = playlist.getSongs().stream()
+                    .map(Song::getId).collect(Collectors.toList());
+            return new PlaylistDTO(
+                    playlist.getId(),
+                    playlist.getName(),
+                    playlist.getType(),
+                    playlist.getImgLink(),
+                    user.getId(),
+                    songIds
+            );
+        }).collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<PlaylistDTO> getAllPlaylists(){
+    	List<Playlist> playlists = playlistRepository.findAll();
+    	return playlists.stream().map(playlist -> {
+            List<Long> songIds = playlist.getSongs().stream()
+                    .map(Song::getId).collect(Collectors.toList());
+            return new PlaylistDTO(
+                    playlist.getId(),
+                    playlist.getName(),
+                    playlist.getType(),
+                    playlist.getImgLink(),
+                    playlist.getUser().getId(),
+                    songIds
+            );
+        }).collect(Collectors.toList());
+    }
+    
+    
+    @Override
+    public String removeSongFromPlaylist(Long playlistId, Long songId) {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        Optional<Song> optionalSong = songRepository.findById(songId);
+
+        if (optionalPlaylist.isEmpty() || optionalSong.isEmpty()) {
+            return "Playlist or Song not found.";
+        }
+
+        Playlist playlist = optionalPlaylist.get();
+        Song song = optionalSong.get();
+
+        if (!playlist.getSongs().contains(song)) {
+            return "Song not found in the playlist.";
+        }
+
+        playlist.getSongs().remove(song);
+        song.getPlaylists().remove(playlist); 
+
+        playlistRepository.save(playlist); 
+
+        return "Song removed from playlist successfully.";
+    }
+    
+    @Override
+    public String addSongToPlaylist(Long playlistId, Long songId) {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        Optional<Song> optionalSong = songRepository.findById(songId);
+
+        if (optionalPlaylist.isEmpty() || optionalSong.isEmpty()) {
+            return "Playlist or Song not found!";
+        }
+
+        Playlist playlist = optionalPlaylist.get();
+        Song song = optionalSong.get();
+
+        if (!playlist.getSongs().contains(song)) {
+            playlist.getSongs().add(song);
+            song.getPlaylists().add(playlist);
+            playlistRepository.save(playlist);
+            return "Song added to playlist successfully!";
+        }
+
+        return "Song already exists in playlist!";
+    }
+
+    @Override
+    public String deletePlaylist(Long playlistId) {
+        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        if (optionalPlaylist.isEmpty()) return "Playlist not found";
+
+        Playlist playlist = optionalPlaylist.get();
+
+        if (playlist.getImageId() != null) {
+            try {
+                cloudinary.uploader().destroy(playlist.getImageId(), ObjectUtils.emptyMap());
+            } catch (IOException e) {
+                System.err.println("Failed to delete image from Cloudinary: " + e.getMessage());
+            }
+        }
+
+        playlistRepository.delete(playlist);
+        return "Playlist deleted successfully";
+    }
+    
+    @Override
+    public List<PlaylistDTO> getPlaylistsByAdmin(){
+    	List<Playlist> adminPlaylists = playlistRepository.findByUserRole("ADMIN");
+    	return adminPlaylists.stream().map(playlist -> {
+            List<Long> songIds = playlist.getSongs().stream()
+                    .map(Song::getId).collect(Collectors.toList());
+            return new PlaylistDTO(
+                    playlist.getId(),
+                    playlist.getName(),
+                    playlist.getType(),
+                    playlist.getImgLink(),
+                    playlist.getUser().getId(),
+                    songIds
+            );
+        }).collect(Collectors.toList());
+    }
+    
+    @Override
+    public boolean deleteUserWithPlaylists(Long userId) {
+        Optional<Users> userOptional = usersRepository.findById(userId);
+        if (userOptional.isEmpty()) return false;
+
+        Users user = userOptional.get();
+        List<Playlist> playlists = playlistRepository.findByUser(user);
+
+        for (Playlist playlist : playlists) {
+            deletePlaylist(playlist.getId());
+        }
+
+        return true;
+    }
 
 }

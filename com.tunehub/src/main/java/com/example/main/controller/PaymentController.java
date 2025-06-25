@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.main.dto.UserDTO;
-import com.example.main.entity.Users;
-import com.example.main.services.RazorpayService;
+import com.example.main.services.PaymentService;
 import com.example.main.services.UsersService;
 
 @RestController
@@ -16,7 +14,7 @@ import com.example.main.services.UsersService;
 public class PaymentController {
 	
 	@Autowired
-	private RazorpayService razorpayService;
+	private PaymentService paymentServices;
 	
 	@Autowired
 	UsersService usersService;
@@ -35,7 +33,7 @@ public class PaymentController {
     public ResponseEntity<?> handleWebhook(@RequestBody String payload) {
         try {
         	
-        	String message = razorpayService.handleWebhook(payload);
+        	String message = paymentServices.handleWebhook(payload);
             
             return ResponseEntity.ok(message);
         } catch (Exception e) {
@@ -49,7 +47,7 @@ public class PaymentController {
             int amount = (int) request.get("amount");
             String email = request.get("email").toString();
 
-            Map<String, Object> orderResponse = razorpayService.createOrder(amount, email);
+            Map<String, Object> orderResponse = paymentServices.createOrder(amount, email);
 
             return ResponseEntity.ok(orderResponse);
         } catch (Exception e) {
@@ -59,9 +57,10 @@ public class PaymentController {
     
     //Temporary used
     @PutMapping("/make-premium")
-    public ResponseEntity<UserDTO> makeUserPremium(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> makeUserPremium(@RequestBody Map<String, String> payload) {
     	String email = payload.get("email");
-        UserDTO updatedUser = razorpayService.makeUserPremium(email);
-        return ResponseEntity.ok(updatedUser);
+    	boolean paymentStatus = usersService.updatePrimeStatus(email);
+        if(paymentStatus) return ResponseEntity.ok("Payment Successfull, Enjoy the Music");
+        else return ResponseEntity.ok("Sorry, Payment unsuccessfull");
     }	
 }

@@ -23,6 +23,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import com.example.main.dto.AuthRequest;
 import com.example.main.dto.UserDTO;
 import com.example.main.dto.UserRegisterDTO;
+import com.example.main.entity.DBPing;
 import com.example.main.entity.Users;
 import com.example.main.repository.DBPingRepo;
 import com.example.main.repository.UsersRepository;
@@ -46,6 +47,8 @@ public class AuthController {
     @Autowired
     private UsersService usersService;
     
+	@Autowired
+	DBPingRepo dbPingRepo;
     
     @Operation(summary = "Register a new user", description = "Registers a new user with the provided information.")
     @PostMapping("/register")
@@ -114,5 +117,12 @@ public class AuthController {
         return ResponseEntity.ok("Logged in as: " + authentication.getName());
     }
     
+    @Operation(summary = "Ping the server", description = "Returns pong to indicate server is alive")
+    @GetMapping("/ping")
+	public ResponseEntity<?> ping() {
+		Optional<DBPing> dbPing = dbPingRepo.findById("ping");
+		if(dbPing.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("I am sleeping");
+	    return ResponseEntity.ok(dbPing.get().getValue());
+	}
 }
 

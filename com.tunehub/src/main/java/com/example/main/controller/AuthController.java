@@ -82,7 +82,7 @@ public class AuthController {
                 .secure(true)
                 .path("/")
                 .maxAge(3600)
-                .sameSite("Strict")
+                .sameSite("None")
                 .build();
 
         // Prepare response without password

@@ -29,6 +29,12 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+			
+	    <!-- Spring Boot Starter Security -->
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-security</artifactId>
+	    </dependency>
 
 		<!-- Spring Boot JPA -->
 		<dependency>
@@ -49,13 +55,13 @@
 		    </exclusions>
 		</dependency>
 
+
 		<!-- Razorpay -->
 		<dependency>
 			<groupId>com.razorpay</groupId>
 			<artifactId>razorpay-java</artifactId>
 			<version>1.4.8</version>
 		</dependency>
-
 		
 		<!-- postger Connector -->
 		<dependency>
@@ -79,29 +85,32 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 		<!-- Swagger -->
 		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-api</artifactId>
-		    <version>0.12.5</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-jackson</artifactId>
-		    <version>0.12.5</version>
 		    <groupId>org.springdoc</groupId>
 		    <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
 		    <version>2.2.0</version>
 		</dependency>
+
 		
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt -->
 		<dependency>
-		    <groupId>io.jsonwebtoken</groupId>
-		    <artifactId>jjwt-impl</artifactId>
-		    <version>0.12.5</version>
-		    <scope>runtime</scope>
-		</dependency>
+	        <groupId>io.jsonwebtoken</groupId>
+	        <artifactId>jjwt-api</artifactId>
+	        <version>0.11.5</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>io.jsonwebtoken</groupId>
+	        <artifactId>jjwt-impl</artifactId>
+	        <version>0.11.5</version>
+	        <scope>runtime</scope>
+	    </dependency>
+	    <dependency>
+	        <groupId>io.jsonwebtoken</groupId>
+	        <artifactId>jjwt-jackson</artifactId>
+	        <version>0.11.5</version>
+	        <scope>runtime</scope>
+	    </dependency>
 
 	</dependencies>
 

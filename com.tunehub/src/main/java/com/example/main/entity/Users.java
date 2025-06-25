@@ -1,135 +1,162 @@
 package com.example.main.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import java.util.Collection;
+import java.util.Collections;
+
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
+import jakarta.persistence.*;
+
 
 @Entity
-public class Users {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	int id;
-	String username;
-	String email;
-	String password;
-	String gender;
-	String role;
-	String address;
-	String image;
-	String imageId;
-	
-	boolean isPremium;
-	
-	public Users() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+public class Users implements UserDetails {
 
-	public Users(int id, String username, String email, String password, String gender, String role, String address,
-			String image, String imageId,
-			boolean isPremium) {
-		super();
-		this.id = id;
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.gender = gender;
-		this.role = role;
-		this.address = address;
-		this.image = image;
-		this.imageId = imageId;
-		this.isPremium = isPremium;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-	public int getId() {
-		return id;
-	}
+    @Column(unique = true, nullable = false)
+    private String username;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @Column(unique = true, nullable = false)
+    private String email;
 
-	public String getUsername() {
-		return username;
-	}
+    private String password;
+    private String gender;
+    private String role;
+    private String address;
+    private String image;
+    private String imageId;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    private boolean isPremium;
 
-	public String getEmail() {
-		return email;
-	}
+    // ----- Constructors -----
+    public Users() {}
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public Users(Long id, String username, String email, String password, String gender,
+                 String role, String address, String image, String imageId, boolean isPremium) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.role = role;
+        this.address = address;
+        this.image = image;
+        this.imageId = imageId;
+        this.isPremium = isPremium;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    // ----- Getters & Setters -----
+    public Long getId() {
+        return id;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getGender() {
-		return gender;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getRole() {
-		return role;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setRole(String role) {
-		this.role = role;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public String getImage() {
-		return image;
-	}
+    public String getGender() {
+        return gender;
+    }
 
-	public void setImage(String image) {
-		this.image = image;
-	}
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
 
-	public String getImageId() {
-		return imageId;
-	}
+    public String getRole() {
+        return role;
+    }
 
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
-	}
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-	public boolean isPremium() {
-		return isPremium;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public void setPremium(boolean isPremium) {
-		this.isPremium = isPremium;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	@Override
-	public String toString() {
-		return "Users [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-				+ ", gender=" + gender + ", role=" + role + ", address=" + address + ", image=" + image + ", imageId="
-				+ imageId + ", isPremium=" + isPremium + "]";
-	}
+    public String getImage() {
+        return image;
+    }
 
-	
-	
-	
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    public boolean isPremium() {
+        return isPremium;
+    }
+
+    public void setPremium(boolean premium) {
+        isPremium = premium;
+    }
+
+    // ----- UserDetails Interface Methods -----
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(() -> "ROLE_"+this.role); // Role must be like "ROLE_USER"
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
+

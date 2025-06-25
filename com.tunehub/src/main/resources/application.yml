@@ -1,3 +1,6 @@
+jwt:
+  secret: ${JWT_TOKEN}
+
 spring:
   servlet:
     multipart:
@@ -28,3 +31,7 @@ razorpay:
   key:
     id: ${RAZORPAY_KEY_ID}
     secret: ${RAZORPAY_SECRET}
+
+server:
+  virtual-threads:
+    enabled: true

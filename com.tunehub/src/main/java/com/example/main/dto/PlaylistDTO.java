@@ -2,73 +2,42 @@ package com.example.main.dto;
 
 import java.util.List;
 
-
 public class PlaylistDTO {
-	private int id;
+
+    private Long id;
     private String name;
     private String type;
-    private String imgLink;
-    private List<SongDTO> songs; // Store only song IDs to avoid circular dependency
-    
-	public PlaylistDTO() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	private String imgLink;
+    private Long userId;
+    private List<Long> songIds;
 
-	public PlaylistDTO(int id, String name, String type, String imgLink, List<SongDTO> songs) {
+    public PlaylistDTO() {}
+
+    public PlaylistDTO(Long id, String name, String type, String imgLink, Long userId, List<Long> songIds) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.imgLink = imgLink;
-		this.songs = songs;
+		this.userId = userId;
+		this.songIds = songIds;
 	}
 
-	public int getId() {
-		return id;
-	}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getImgLink() {
-		return imgLink;
-	}
-
-	public void setImgLink(String imgLink) {
-		this.imgLink = imgLink;
-	}
-
-	public List<SongDTO> getSongs() {
-		return songs;
-	}
-
-	public void setSongs(List<SongDTO> songs) {
-		this.songs = songs;
-	}
-
-	@Override
-	public String toString() {
-		return "PlaylistDTO [id=" + id + ", name=" + name + ", type=" + type + ", imgLink=" + imgLink + ", songs="
-				+ songs + "]";
-	}
-
+    public String getType() { return type; }
+    public void setType(String description) { this.type = description; }
     
+    public String getImgLink() { return imgLink; }
+	public void setImgLink(String imgLink) { this.imgLink = imgLink; }
+
+	public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+
+    public List<Long> getSongIds() { return songIds; }
+    public void setSongIds(List<Long> songIds) { this.songIds = songIds; }
 }

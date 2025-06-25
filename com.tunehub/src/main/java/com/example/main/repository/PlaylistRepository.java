@@ -1,17 +1,16 @@
 package com.example.main.repository;
 
+import com.example.main.entity.Playlist;
+import com.example.main.entity.Users;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-
-import com.example.main.entity.Playlist;
-
-public interface PlaylistRepository	extends JpaRepository<Playlist, Integer>
-{
-	@Query("SELECT p FROM Playlist p LEFT JOIN FETCH p.songs")
-	List<Playlist> findAllPlaylistsWithSongs();
-	
-	Playlist findById(int id);
+public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
+    List<Playlist> findByUser(Users user);
+    
+    List<Playlist> findByUserRole(String role);
+    
+    void deleteAllByUser(Users user);
 
 }

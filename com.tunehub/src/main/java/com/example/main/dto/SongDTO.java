@@ -3,112 +3,57 @@ package com.example.main.dto;
 import java.util.List;
 
 public class SongDTO {
-	private int id;
+    private Long id;
     private String name;
     private String genre;
-    private String artist;
-    private int artistId;
+    private Long artistId;
+    private String artistName;
     private String link;
     private String imgLink;
-    boolean likeSong;
-    private List<Integer> playlistIds;
+    private boolean likeSong;
+    private List<Long> playlistIds;
 
-    // Default constructor
     public SongDTO() {}
 
-    // Parameterized constructor
-    public SongDTO(int id, String name, String genre, int artistId, String artist, String link, String imgLink,boolean likeSong, List<Integer> playlistIds) {
+    public SongDTO(Long id, String name, String genre, Long artistId, String artistName,
+                   String link, String imgLink, boolean likeSong, List<Long> playlistIds) {
         this.id = id;
         this.name = name;
-        this.artist = artist;
-        this.artistId = artistId;
         this.genre = genre;
+        this.artistId = artistId;
+        this.artistName = artistName;
         this.link = link;
         this.imgLink = imgLink;
         this.likeSong = likeSong;
         this.playlistIds = playlistIds;
     }
 
-    // Getters and setters
-    public int getId() {
-        return id;
-    }
+    // Getters & Setters
 
-    public void setId(int id) {
-        this.id = id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
 
-    public String getArtist() {
-        return artist;
-    }
+    public Long getArtistId() { return artistId; }
+    public void setArtistId(Long artistId) { this.artistId = artistId; }
 
-    public void setArtist(String artist) {
-        this.artist = artist;
-    }
-    
-    public int getArtistId() {
-		return artistId;
-	}
+    public String getArtistName() { return artistName; }
+    public void setArtistName(String artistName) { this.artistName = artistName; }
 
-	public void setArtistId(int artistId) {
-		this.artistId = artistId;
-	}
+    public String getLink() { return link; }
+    public void setLink(String link) { this.link = link; }
 
-	public String getGenre() {
-        return genre;
-    }
+    public String getImgLink() { return imgLink; }
+    public void setImgLink(String imgLink) { this.imgLink = imgLink; }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
-    }
+    public boolean isLikeSong() { return likeSong; }
+    public void setLikeSong(boolean likeSong) { this.likeSong = likeSong; }
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
-
-    public String getImgLink() {
-        return imgLink;
-    }
-
-    public void setImgLink(String imgLink) {
-        this.imgLink = imgLink;
-    }
-
-    public boolean getLikeSong() {
-		return likeSong;
-	}
-
-	public void setLikeSong(boolean likeSong) {
-		this.likeSong = likeSong;
-	}
-    
-    public List<Integer> getPlaylistIds() {
-        return playlistIds;
-    }
-
-    public void setPlaylistIds(List<Integer> playlistIds) {
-        this.playlistIds = playlistIds;
-    }
-
-	@Override
-	public String toString() {
-		return "SongDTO [id=" + id + ", name=" + name + ", artist=" + artist + ", artistId=" + artistId + ", genre="
-				+ genre + ", link=" + link + ", imgLink=" + imgLink + ", likeSong=" + likeSong + ", playlistIds="
-				+ playlistIds + "]";
-	}
-
-	    
-
+    public List<Long> getPlaylistIds() { return playlistIds; }
+    public void setPlaylistIds(List<Long> playlistIds) { this.playlistIds = playlistIds; }
 }

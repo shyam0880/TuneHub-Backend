@@ -3,7 +3,6 @@ package com.example.main.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,7 +13,7 @@ import jakarta.persistence.OneToMany;
 public class Artist {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	int id;
+	Long id;
 	String name;
 	String image;
 	String imageId;
@@ -27,7 +26,7 @@ public class Artist {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Artist(int id, String name, String image, String imageId, List<Song> songs) {
+	public Artist(Long id, String name, String image, String imageId, List<Song> songs) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -36,45 +35,20 @@ public class Artist {
 		this.songs = songs;
 	}
 
-	public int getId() {
-		return id;
-	}
+	public Long getId() { return id; }
+	public void setId(Long id) { this.id = id; }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 
-	public String getName() {
-		return name;
-	}
+	public String getImage() { return image; }
+	public void setImage(String image) { this.image = image; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public String getImageId() { return imageId; }
+	public void setImageId(String imageId) { this.imageId = imageId; }
 
-	public String getImage() {
-		return image;
-	}
-
-	public void setImage(String image) {
-		this.image = image;
-	}
-
-	public String getImageId() {
-		return imageId;
-	}
-
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
-	}
-
-	public List<Song> getSongs() {
-		return songs;
-	}
-
-	public void setSongs(List<Song> songs) {
-		this.songs = songs;
-	}
+	public List<Song> getSongs() { return songs; }
+	public void setSongs(List<Song> songs) { this.songs = songs; }
 
 	@Override
 	public String toString() {
@@ -82,8 +56,4 @@ public class Artist {
 				+ "]";
 	}
 	 
-	 
-	
-	
-
 }

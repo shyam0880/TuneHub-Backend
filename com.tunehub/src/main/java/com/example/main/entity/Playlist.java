@@ -1,99 +1,65 @@
 package com.example.main.entity;
 
-import java.util.List;
-
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "playlists")
 public class Playlist {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
-	private String name;
-	private String type;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String type;
 	private String imgLink;
 	private String imageId;
-	
-	@ManyToMany
-	@JoinTable(
-	    name = "playlist_song",  
-	    joinColumns = @JoinColumn(name = "playlist_id"), 
-	    inverseJoinColumns = @JoinColumn(name = "song_id") 
-	)
-	List<Song> songs;
 
-	public Playlist() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private Users user;
 
-	public Playlist(int id, String name, String type, String imgLink,String imageId, List<Song> songs) {
+    @ManyToMany
+    @JoinTable(
+            name = "playlist_songs",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "song_id")
+    )
+    private Set<Song> songs = new HashSet<>();
+
+    public Playlist() {}
+
+    public Playlist(Long id, String name, String type, String imgLink, String imageId, Users user, Set<Song> songs) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.imgLink = imgLink;
 		this.imageId = imageId;
+		this.user = user;
 		this.songs = songs;
 	}
 
-	public int getId() {
-		return id;
-	}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-	public String getName() {
-		return name;
-	}
+    public String getType() { return type; }
+    public void setType(String description) { this.type = description; }
+    
+    public String getImgLink() { return imgLink; }
+	public void setImgLink(String imgLink) { this.imgLink = imgLink; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public String getImageId() { return imageId; }
+	public void setImageId(String imageId) { this.imageId = imageId; }
 
-	public String getType() {
-		return type;
-	}
+	public Users getUser() { return user; }
+    public void setUser(Users user) { this.user = user; }
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public String getImgLink() {
-		return imgLink;
-	}
-
-	public void setImgLink(String imgLink) {
-		this.imgLink = imgLink;
-	}
-
-	public String getImageId() {
-		return imageId;
-	}
-
-	public void setImageId(String imageId) {
-		this.imageId = imageId;
-	}
-
-	public List<Song> getSongs() {
-		return songs;
-	}
-
-	public void setSongs(List<Song> songs) {
-		this.songs = songs;
-	}
-
-	@Override
-	public String toString() {
-		return "Playlist [id=" + id + ", name=" + name + ", type=" + type + ", imgLink=" + imgLink + ", imageId="
-				+ imageId + ", songs=" + songs + "]";
-	}
-
-	
-
-
-
-	
+    public Set<Song> getSongs() { return songs; }
+    public void setSongs(Set<Song> songs) { this.songs = songs; }
 }

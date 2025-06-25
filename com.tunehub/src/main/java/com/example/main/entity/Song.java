@@ -1,138 +1,63 @@
 package com.example.main.entity;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Table(name = "songs")
 public class Song {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	int id;
-	String name;
-	String genre;
-	String link;
-	String songID; //song cloudinary id
-	String imgLink;
-	String imageID;
-	boolean likeSong;
-	
-	@ManyToOne
-    @JoinColumn(name = "artist_id", nullable = true) // Ensures every song has an artist
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+    private String genre;
+    private String link;
+    private String imgLink;
+    private String songID;
+    private String imageID;
+    private boolean likeSong;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "artist_id")
     private Artist artist;
-	
-	@ManyToMany(mappedBy = "songs")
-	List<Playlist> playlists;
 
-	public Song() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+    @ManyToMany(mappedBy = "songs", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JsonBackReference
+    private Set<Playlist> playlists = new HashSet<>();
 
-	public Song(int id, String name, String genre, String link, String songID, String imgLink, String imageID,
-			boolean likeSong, Artist artist, List<Playlist> playlists) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.genre = genre;
-		this.link = link;
-		this.songID = songID;
-		this.imgLink = imgLink;
-		this.imageID = imageID;
-		this.likeSong = likeSong;
-		this.artist = artist;
-		this.playlists = playlists;
-	}
+    public Song() {}
 
-	public int getId() {
-		return id;
-	}
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-	public String getName() {
-		return name;
-	}
+    public String getGenre() { return genre; }
+    public void setGenre(String genre) { this.genre = genre; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getLink() { return link; }
+    public void setLink(String link) { this.link = link; }
 
-	public String getGenre() {
-		return genre;
-	}
+    public String getImgLink() { return imgLink; }
+    public void setImgLink(String imgLink) { this.imgLink = imgLink; }
 
-	public void setGenre(String genre) {
-		this.genre = genre;
-	}
+    public String getSongID() { return songID; }
+    public void setSongID(String songID) { this.songID = songID; }
 
-	public String getLink() {
-		return link;
-	}
+    public String getImageID() { return imageID; }
+    public void setImageID(String imageID) { this.imageID = imageID; }
 
-	public void setLink(String link) {
-		this.link = link;
-	}
+    public boolean getLikeSong() { return likeSong; }
+    public void setLikeSong(boolean likeSong) { this.likeSong = likeSong; }
 
-	public String getSongID() {
-		return songID;
-	}
+    public Artist getArtist() { return artist; }
+    public void setArtist(Artist artist) { this.artist = artist; }
 
-	public void setSongID(String songID) {
-		this.songID = songID;
-	}
-
-	public String getImgLink() {
-		return imgLink;
-	}
-
-	public void setImgLink(String imgLink) {
-		this.imgLink = imgLink;
-	}
-
-	public String getImageID() {
-		return imageID;
-	}
-
-	public void setImageID(String imageID) {
-		this.imageID = imageID;
-	}
-
-	public boolean getLikeSong() {
-		return likeSong;
-	}
-
-	public void setLikeSong(boolean likeSong) {
-		this.likeSong = likeSong;
-	}
-
-	public Artist getArtist() {
-		return artist;
-	}
-
-	public void setArtist(Artist artist) {
-		this.artist = artist;
-	}
-
-	public List<Playlist> getPlaylists() {
-		return playlists;
-	}
-
-	public void setPlaylists(List<Playlist> playlists) {
-		this.playlists = playlists;
-	}
-
-	@Override
-	public String toString() {
-		return "Song [id=" + id + ", name=" + name + ", genre=" + genre + ", link=" + link + ", songID=" + songID
-				+ ", imgLink=" + imgLink + ", imageID=" + imageID + ", likeSong=" + likeSong + ", artist=" + artist
-				+ ", playlists=" + playlists + "]";
-	}
-	
-	
-
-		
-
+    public Set<Playlist> getPlaylists() { return playlists; }
+    public void setPlaylists(Set<Playlist> playlists) { this.playlists = playlists; }
 }

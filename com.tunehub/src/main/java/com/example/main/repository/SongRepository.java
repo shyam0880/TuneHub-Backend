@@ -9,13 +9,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.main.entity.Artist;
 import com.example.main.entity.Song;
 
-public interface SongRepository extends JpaRepository<Song, Integer>{
+public interface SongRepository extends JpaRepository<Song, Long>{
 
 	Song findByName(String name);
 	
 	boolean existsByName(String name);
-	
-	Song findById(int id);
 
 	List<Song> findByArtist(Artist artist);
 

@@ -13,7 +13,7 @@ import com.cloudinary.utils.ObjectUtils;
 import com.example.main.dto.ArtistDTO;
 import com.example.main.dto.SongDTO;
 import com.example.main.entity.Artist;
-import com.example.main.entity.Song;
+import com.example.main.entity.Songs;
 import com.example.main.repository.ArtistRepository;
 import com.example.main.repository.SongRepository;
 
@@ -102,8 +102,8 @@ public class ArtistServiceImplementation implements ArtistService {
 
         Artist artist = optionalArtist.get();
 
-        List<Song> songsWithArtist = songRepository.findByArtist(artist);
-        for (Song song : songsWithArtist) {
+        List<Songs> songsWithArtist = songRepository.findByArtist(artist);
+        for (Songs song : songsWithArtist) {
             song.setArtist(null);
         }
         songRepository.saveAll(songsWithArtist);

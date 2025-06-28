@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "playlists")
-public class Playlist {
+public class Playlists {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +27,11 @@ public class Playlist {
             joinColumns = @JoinColumn(name = "playlist_id"),
             inverseJoinColumns = @JoinColumn(name = "song_id")
     )
-    private Set<Song> songs = new HashSet<>();
+    private Set<Songs> songs = new HashSet<>();
 
-    public Playlist() {}
+    public Playlists() {}
 
-    public Playlist(Long id, String name, String type, String imgLink, String imageId, Users user, Set<Song> songs) {
+    public Playlists(Long id, String name, String type, String imgLink, String imageId, Users user, Set<Songs> songs) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -60,6 +60,6 @@ public class Playlist {
 	public Users getUser() { return user; }
     public void setUser(Users user) { this.user = user; }
 
-    public Set<Song> getSongs() { return songs; }
-    public void setSongs(Set<Song> songs) { this.songs = songs; }
+    public Set<Songs> getSongs() { return songs; }
+    public void setSongs(Set<Songs> songs) { this.songs = songs; }
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "songs")
-public class Song {
+public class Songs {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,9 @@ public class Song {
 
     @ManyToMany(mappedBy = "songs", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JsonBackReference
-    private Set<Playlist> playlists = new HashSet<>();
+    private Set<Playlists> playlists = new HashSet<>();
 
-    public Song() {}
+    public Songs() {}
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -58,6 +58,6 @@ public class Song {
     public Artist getArtist() { return artist; }
     public void setArtist(Artist artist) { this.artist = artist; }
 
-    public Set<Playlist> getPlaylists() { return playlists; }
-    public void setPlaylists(Set<Playlist> playlists) { this.playlists = playlists; }
+    public Set<Playlists> getPlaylists() { return playlists; }
+    public void setPlaylists(Set<Playlists> playlists) { this.playlists = playlists; }
 }

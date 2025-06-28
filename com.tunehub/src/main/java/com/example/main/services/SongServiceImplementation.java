@@ -2,10 +2,11 @@ package com.example.main.services;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.example.main.dto.ArtistDTO;
 import com.example.main.dto.SongDTO;
 import com.example.main.entity.Artist;
-import com.example.main.entity.Playlist;
-import com.example.main.entity.Song;
+import com.example.main.entity.Playlists;
+import com.example.main.entity.Songs;
 import com.example.main.repository.ArtistRepository;
 import com.example.main.repository.PlaylistRepository;
 import com.example.main.repository.SongRepository;
@@ -40,6 +41,26 @@ public class SongServiceImplementation implements SongService {
                 "fileId", (String) uploadResult.get("public_id")
         );
     }
+    
+    @Override
+    public Map<String,Object> getDashData(){
+    	Map<String,Object> data = new HashMap();
+    	
+    	List<Songs> songs = songRepository.findTop5ByOrderByIdDesc();
+        data.put("songs", (songs.stream().map(this::convertToDTO).toList()));
+        
+        List<Artist> artists = artistRepository.findTop8ByOrderByIdDesc();
+        List<ArtistDTO> artistDTO = artists.stream().map(artist->
+        						new ArtistDTO(
+        								artist.getId(), 
+        								artist.getName(), 
+        								artist.getImage(), 
+        								artist.getImageId(),
+        								null)
+        		).toList();
+        data.put("artists", artistDTO);
+        return data;
+    }
 
     @Override
     public String addSong(String name, String genre, Long artistId, MultipartFile songFile, MultipartFile imageFile) throws Exception {
@@ -59,7 +80,7 @@ public class SongServiceImplementation implements SongService {
             Artist artist = artistId != null ? artistRepository.findById(artistId).orElse(null) : null;
 
             // Create song entity
-            Song song = new Song();
+            Songs song = new Songs();
             song.setName(name);
             song.setGenre(genre);
             song.setLink(songUpload.get("fileUrl"));
@@ -90,9 +111,9 @@ public class SongServiceImplementation implements SongService {
     public String updateSong(Long songId, String name, String genre, Long artistId,
                               MultipartFile newSongFile, MultipartFile newImageFile) throws Exception {
 
-    	Optional<Song> optionalSong = songRepository.findById(songId);
+    	Optional<Songs> optionalSong = songRepository.findById(songId);
         if (optionalSong.isEmpty()) return "Song not found";
-        Song existingSong = optionalSong.get();
+        Songs existingSong = optionalSong.get();
 
         if (newSongFile != null && !newSongFile.isEmpty()) {
             cloudinaryService.deleteFromCloudinary(existingSong.getSongID(), "video");
@@ -122,12 +143,12 @@ public class SongServiceImplementation implements SongService {
 
     @Override
     public List<SongDTO> fetchAllSongs() {
-        List<Song> songs = songRepository.findAll();
+        List<Songs> songs = songRepository.findAll();
         return songs.stream().map(this::convertToDTO).toList();
     }
 
-    private SongDTO convertToDTO(Song song) {
-        List<Long> playlistIds = song.getPlaylists().stream().map(Playlist::getId).toList();
+    private SongDTO convertToDTO(Songs song) {
+        List<Long> playlistIds = song.getPlaylists().stream().map(Playlists::getId).toList();
 
         return new SongDTO(
                 song.getId(),
@@ -144,14 +165,14 @@ public class SongServiceImplementation implements SongService {
 
     @Override
     public String deleteById(Long id) {
-    	Optional<Song> optionalSong = songRepository.findById(id);
+    	Optional<Songs> optionalSong = songRepository.findById(id);
         if (optionalSong.isPresent()) {
-        	Song song = optionalSong.get();
+        	Songs song = optionalSong.get();
 
             cloudinaryService.deleteFromCloudinary(song.getSongID(), "video");
             cloudinaryService.deleteFromCloudinary(song.getImageID(), "image");
 
-            for (Playlist playlist : song.getPlaylists()) {
+            for (Playlists playlist : song.getPlaylists()) {
                 playlist.getSongs().remove(song);
             }
             playlistRepository.saveAll(song.getPlaylists());
@@ -163,16 +184,16 @@ public class SongServiceImplementation implements SongService {
 
     @Override
     public SongDTO findById(Long id) {
-    	Optional<Song> optionalSong = songRepository.findById(id);
+    	Optional<Songs> optionalSong = songRepository.findById(id);
     	if(optionalSong.isEmpty()) return null;
     	else return convertToDTO(optionalSong.get());
     }
 
 	@Override
 	public List<SongDTO> getPlaylistSong(Long id) {
-		Optional<Playlist> optionalPlaylist = playlistRepository.findById(id);
+		Optional<Playlists> optionalPlaylist = playlistRepository.findById(id);
 		if(optionalPlaylist.isEmpty()) return null;
-		Playlist playlist = optionalPlaylist.get();
+		Playlists playlist = optionalPlaylist.get();
 		List<SongDTO> songs = playlist.getSongs().stream().map(this::convertToDTO).toList();
 		return songs;
 	}

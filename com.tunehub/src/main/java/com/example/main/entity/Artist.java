@@ -8,25 +8,27 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "artist")
 public class Artist {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 	String name;
 	String image;
 	String imageId;
 	
 	 @OneToMany(mappedBy = "artist")
-	 private List<Song> songs = new ArrayList<>();
+	 private List<Songs> songs = new ArrayList<>();
 
 	public Artist() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Artist(Long id, String name, String image, String imageId, List<Song> songs) {
+	public Artist(Long id, String name, String image, String imageId, List<Songs> songs) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -47,8 +49,8 @@ public class Artist {
 	public String getImageId() { return imageId; }
 	public void setImageId(String imageId) { this.imageId = imageId; }
 
-	public List<Song> getSongs() { return songs; }
-	public void setSongs(List<Song> songs) { this.songs = songs; }
+	public List<Songs> getSongs() { return songs; }
+	public void setSongs(List<Songs> songs) { this.songs = songs; }
 
 	@Override
 	public String toString() {

@@ -3,8 +3,8 @@ package com.example.main.services;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.example.main.dto.PlaylistDTO;
-import com.example.main.entity.Playlist;
-import com.example.main.entity.Song;
+import com.example.main.entity.Playlists;
+import com.example.main.entity.Songs;
 import com.example.main.entity.Users;
 import com.example.main.repository.PlaylistRepository;
 import com.example.main.repository.SongRepository;
@@ -54,14 +54,14 @@ public class PlaylistServiceImplementation implements PlaylistService {
 	        publicId = (String) uploadResult.get("public_id");
 
 	        Set<Long> songIds = objectMapper.readValue(songsJson, new TypeReference<>() {});
-	        Set<Song> songs = new HashSet<>(songRepository.findAllById(songIds));
+	        Set<Songs> songs = new HashSet<>(songRepository.findAllById(songIds));
 
 	        if (songs.isEmpty()) {
 	            cloudinary.uploader().destroy(publicId, ObjectUtils.emptyMap());
 	            return "No valid songs found";
 	        }
 
-	        Playlist playlist = new Playlist();
+	        Playlists playlist = new Playlists();
 	        playlist.setName(name);
 	        playlist.setType(type);
 	        playlist.setUser(userOptional.get());
@@ -89,12 +89,12 @@ public class PlaylistServiceImplementation implements PlaylistService {
 
     @Override
     public String updatePlaylist(Long playlistId, String name, String type, MultipartFile image, String songsJson) throws Exception {
-        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        Optional<Playlists> optionalPlaylist = playlistRepository.findById(playlistId);
         if (optionalPlaylist.isEmpty()) {
             return "Playlist not found!";
         }
 
-        Playlist existingPlaylist = optionalPlaylist.get();
+        Playlists existingPlaylist = optionalPlaylist.get();
 
         if (image != null && !image.isEmpty()) {
             try {
@@ -119,7 +119,7 @@ public class PlaylistServiceImplementation implements PlaylistService {
         if (songsJson != null && !songsJson.isBlank()) {
             try {
                 Set<Long> songIds = objectMapper.readValue(songsJson, new TypeReference<>() {});
-                Set<Song> updatedSongs = new HashSet<>(songRepository.findAllById(songIds));
+                Set<Songs> updatedSongs = new HashSet<>(songRepository.findAllById(songIds));
                 existingPlaylist.setSongs(updatedSongs);
             } catch (Exception e) {
                 return "Invalid song data!";
@@ -137,11 +137,11 @@ public class PlaylistServiceImplementation implements PlaylistService {
         if (userOptional.isEmpty()) return Collections.emptyList();
 
         Users user = userOptional.get();
-        List<Playlist> playlists = playlistRepository.findByUser(user);
+        List<Playlists> playlists = playlistRepository.findByUser(user);
 
         return playlists.stream().map(playlist -> {
             List<Long> songIds = playlist.getSongs().stream()
-                    .map(Song::getId).collect(Collectors.toList());
+                    .map(Songs::getId).collect(Collectors.toList());
             return new PlaylistDTO(
                     playlist.getId(),
                     playlist.getName(),
@@ -155,10 +155,10 @@ public class PlaylistServiceImplementation implements PlaylistService {
     
     @Override
     public List<PlaylistDTO> getAllPlaylists(){
-    	List<Playlist> playlists = playlistRepository.findAll();
+    	List<Playlists> playlists = playlistRepository.findAll();
     	return playlists.stream().map(playlist -> {
             List<Long> songIds = playlist.getSongs().stream()
-                    .map(Song::getId).collect(Collectors.toList());
+                    .map(Songs::getId).collect(Collectors.toList());
             return new PlaylistDTO(
                     playlist.getId(),
                     playlist.getName(),
@@ -173,15 +173,15 @@ public class PlaylistServiceImplementation implements PlaylistService {
     
     @Override
     public String removeSongFromPlaylist(Long playlistId, Long songId) {
-        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
-        Optional<Song> optionalSong = songRepository.findById(songId);
+        Optional<Playlists> optionalPlaylist = playlistRepository.findById(playlistId);
+        Optional<Songs> optionalSong = songRepository.findById(songId);
 
         if (optionalPlaylist.isEmpty() || optionalSong.isEmpty()) {
             return "Playlist or Song not found.";
         }
 
-        Playlist playlist = optionalPlaylist.get();
-        Song song = optionalSong.get();
+        Playlists playlist = optionalPlaylist.get();
+        Songs song = optionalSong.get();
 
         if (!playlist.getSongs().contains(song)) {
             return "Song not found in the playlist.";
@@ -197,15 +197,15 @@ public class PlaylistServiceImplementation implements PlaylistService {
     
     @Override
     public String addSongToPlaylist(Long playlistId, Long songId) {
-        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
-        Optional<Song> optionalSong = songRepository.findById(songId);
+        Optional<Playlists> optionalPlaylist = playlistRepository.findById(playlistId);
+        Optional<Songs> optionalSong = songRepository.findById(songId);
 
         if (optionalPlaylist.isEmpty() || optionalSong.isEmpty()) {
             return "Playlist or Song not found!";
         }
 
-        Playlist playlist = optionalPlaylist.get();
-        Song song = optionalSong.get();
+        Playlists playlist = optionalPlaylist.get();
+        Songs song = optionalSong.get();
 
         if (!playlist.getSongs().contains(song)) {
             playlist.getSongs().add(song);
@@ -219,10 +219,10 @@ public class PlaylistServiceImplementation implements PlaylistService {
 
     @Override
     public String deletePlaylist(Long playlistId) {
-        Optional<Playlist> optionalPlaylist = playlistRepository.findById(playlistId);
+        Optional<Playlists> optionalPlaylist = playlistRepository.findById(playlistId);
         if (optionalPlaylist.isEmpty()) return "Playlist not found";
 
-        Playlist playlist = optionalPlaylist.get();
+        Playlists playlist = optionalPlaylist.get();
 
         if (playlist.getImageId() != null) {
             try {
@@ -238,10 +238,10 @@ public class PlaylistServiceImplementation implements PlaylistService {
     
     @Override
     public List<PlaylistDTO> getPlaylistsByAdmin(){
-    	List<Playlist> adminPlaylists = playlistRepository.findByUserRole("ADMIN");
+    	List<Playlists> adminPlaylists = playlistRepository.findByUserRole("ADMIN");
     	return adminPlaylists.stream().map(playlist -> {
             List<Long> songIds = playlist.getSongs().stream()
-                    .map(Song::getId).collect(Collectors.toList());
+                    .map(Songs::getId).collect(Collectors.toList());
             return new PlaylistDTO(
                     playlist.getId(),
                     playlist.getName(),
@@ -259,9 +259,9 @@ public class PlaylistServiceImplementation implements PlaylistService {
         if (userOptional.isEmpty()) return false;
 
         Users user = userOptional.get();
-        List<Playlist> playlists = playlistRepository.findByUser(user);
+        List<Playlists> playlists = playlistRepository.findByUser(user);
 
-        for (Playlist playlist : playlists) {
+        for (Playlists playlist : playlists) {
             deletePlaylist(playlist.getId());
         }
 

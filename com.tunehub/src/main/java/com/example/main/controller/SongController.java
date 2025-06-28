@@ -8,7 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,6 +36,18 @@ public class SongController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+    
+    @GetMapping("/data")
+    public ResponseEntity<?> getDashboardData(){
+    	Map<String,Object> data = songService.getDashData();
+    	List<?> songs = (List<?>) data.get("songs");
+	    List<?> artists = (List<?>) data.get("artists");
+
+	    if (songs.isEmpty() && artists.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No data present");
+	    }
+    	return ResponseEntity.ok(data);
     }
 
     @GetMapping

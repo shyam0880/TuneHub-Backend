@@ -33,6 +33,9 @@ public class SongServiceImplementation implements SongService {
 
     @Autowired
     ArtistRepository artistRepository;
+    
+    @Autowired
+    ArtistService artistService;
 
     private Map<String, String> uploadFile(MultipartFile file, String resourceType) throws Exception {
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap("resource_type", resourceType));
@@ -44,20 +47,14 @@ public class SongServiceImplementation implements SongService {
     
     @Override
     public Map<String,Object> getDashData(){
-    	Map<String,Object> data = new HashMap();
+    	Map<String,Object> data = new HashMap<>();
     	
-    	List<Songs> songs = songRepository.findTop5ByOrderByIdDesc();
+//    	List<Songs> songs = songRepository.findTop5ByOrderByIdDesc();
+    	List<Songs> songs = songRepository.findAll();
         data.put("songs", (songs.stream().map(this::convertToDTO).toList()));
         
-        List<Artist> artists = artistRepository.findTop8ByOrderByIdDesc();
-        List<ArtistDTO> artistDTO = artists.stream().map(artist->
-        						new ArtistDTO(
-        								artist.getId(), 
-        								artist.getName(), 
-        								artist.getImage(), 
-        								artist.getImageId(),
-        								null)
-        		).toList();
+//        List<Artist> artists = artistRepository.findTop8ByOrderByIdDesc();
+        List<ArtistDTO> artistDTO = artistService.getAllArtists();
         data.put("artists", artistDTO);
         return data;
     }

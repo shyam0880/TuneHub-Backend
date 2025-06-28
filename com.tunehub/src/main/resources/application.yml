@@ -13,8 +13,11 @@ spring:
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 5
-      connection-timeout: 10000
+      maximum-pool-size: 10 
+      minimum-idle: 3              # Always keep 3 idle (ready)
+      idle-timeout: 600000         # Close unused connections after 10 min
+      max-lifetime: 1800000        # Recycle any connection after 30 min
+      connection-timeout: 30000
 
   jpa:
     hibernate:

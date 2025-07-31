@@ -117,12 +117,18 @@ public class AuthController {
         return ResponseEntity.ok("Logged in as: " + authentication.getName());
     }
     
-    @Operation(summary = "Ping the server", description = "Returns pong to indicate server is alive")
-    @GetMapping("/ping")
-	public ResponseEntity<?> ping() {
+    @Operation(summary = "Ping the server return pong from DB", description = "Returns pong to indicate server and DB is alive")
+    @GetMapping("/dbping")
+	public ResponseEntity<?> dbping() {
 		Optional<DBPing> dbPing = dbPingRepo.findById("ping");
 		if(dbPing.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("I am sleeping");
 	    return ResponseEntity.ok(dbPing.get().getValue());
+	}
+
+    @Operation(summary = "Ping the server return pong from server", description = "Returns pong to indicate server is alive")
+    @GetMapping("/ping")
+	public ResponseEntity<?> ping() {
+		return ResponseEntity.ok("pong");
 	}
 }
 
